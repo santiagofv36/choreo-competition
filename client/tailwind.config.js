@@ -10,6 +10,8 @@ export default {
         primary: '#2c3e50', // Dark blue
         secondary: '#3498db', // Blue
         tertiary: '#e74c3c', // Red
+        quartiarty: '#202d3a', // Dark dark dark blue
+        quintiarty: '#283847', // White
         success: '#2ecc71', // Green
         warning: '#e67e22', // Dark orange
         accent: {

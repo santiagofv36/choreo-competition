@@ -9,11 +9,14 @@ import {
   ProductPage,
   SignupPage,
 } from './pages';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 
 function App() {
   return (
-    <>
+    <main className="w-full max-h-full bg-primary">
       <BrowserRouter>
+        {/* <Navbar /> */}
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/products" element={<ProductPage />} />
@@ -24,8 +27,9 @@ function App() {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
+        <Footer />
       </BrowserRouter>
-    </>
+    </main>
   );
 }
 
