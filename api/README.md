@@ -18,7 +18,7 @@
     
 2. Instalar dependencias:
     ```bash
-    (venv) pip install -r requirements.txt
+    (venv) pip install -r backend/requirements.txt
  
 3. Navega hacia Backend
     ```bash
