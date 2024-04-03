@@ -1,18 +1,25 @@
 import React from 'react';
+import Logo from './icons/logoIcon';
+import UserIcon from './icons/UserIcon';
+import CartIcon from './icons/cartIcon';
 
 export default function Navbar() {
   return (
-    <header className="flex justify-between bg-transparent w-full p-5">
-      <div>Logo</div>
-      <ul className="flex gap-2">
-        <li className="">Home</li>
-        <li className="">Categories</li>
-        <li className="">Contact Us</li>
-        <li className="">Blog</li>
+    <header className="flex justify-between items-center bg-transparent w-full px-28 py-5">
+      <Logo className="text-white" />
+      <ul className="flex gap-6">
+        <li className="text-white">Home</li>
+        <li className="text-white">Categories</li>
+        <li className="text-white">Contact Us</li>
+        <li className="text-white">Blog</li>
       </ul>
       <div className="flex gap-4">
-        <button>USER</button>
-        <button>CART</button>
+        <a href="/user">
+          <UserIcon className="size-6 text-white" />
+        </a>
+        <a href="/user">
+          <CartIcon className="size-6 text-white" />
+        </a>
       </div>
     </header>
   );
