@@ -1,6 +1,7 @@
-// interface HomePageProps {}
-
-import SearchIcon from '../components/icons/SearchIcon';
+import React from 'react';
+import Input from '../components/inputs/Input';
+import Button from '../components/inputs/Button';
+import { useNavigate } from 'react-router';
 
 const PRODUCTS = [
   {
@@ -51,6 +52,13 @@ const FAQ = [
 ];
 
 const HomePage = () => {
+  const [search, setSearch] = React.useState('');
+  const navigate = useNavigate();
+
+  const handleViewAll = () => {
+    navigate('/products');
+  };
+
   return (
     <main className="flex flex-col justify-center items-center">
       {/* introduction section */}
@@ -64,18 +72,8 @@ const HomePage = () => {
         <p className="text-md md:text-lg text-white">
           We provide the best products for you
         </p>
-        <div className="relative w-96">
-          <input
-            type="text"
-            className="rounded-full px-4 py-2 w-full bg-quintiarty border border-border-color text-white"
-            placeholder="Search for products"
-          />
-          <div className="size-[35px] bg-quartiarty absolute right-2 top-1 rounded-full">
-            <SearchIcon
-              className="absolute right-[6px] top-2 size-[20px] text-white rounded-full
-            "
-            />
-          </div>
+        <div className="w-96">
+          <Input value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
       </section>
       {/* Featured products */}
@@ -169,7 +167,11 @@ const HomePage = () => {
               This are our most purchased products overtime
             </span>
           </div>
-          <button>View all</button>
+          <Button
+            onClick={handleViewAll}
+            text="View All"
+            className="w-24 lg:w-28"
+          />
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {PRODUCTS.map((product, idx) => (
