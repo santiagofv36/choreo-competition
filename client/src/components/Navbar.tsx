@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 import Logo from './icons/logoIcon';
 import UserIcon from './icons/UserIcon';
 import CartIcon from './icons/cartIcon';
@@ -6,7 +6,7 @@ import CartIcon from './icons/cartIcon';
 export default function Navbar() {
   return (
     <header className="flex justify-between items-center bg-transparent w-full px-28 py-5">
-      <Logo className="text-white" />
+      <Logo className="text-white size-32" />
       <ul className="flex gap-6">
         <li className="text-white">Home</li>
         <li className="text-white">Categories</li>
