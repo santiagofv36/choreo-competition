@@ -189,7 +189,7 @@ const HomePage = () => {
         </div>
       </section>
       {/* FAQ */}
-      <section className="w-full bg-bg-neutral p-5 flex flex-col lg:flex-row gap-4 justify-between lg:px-48 md:px-32">
+      <section className="w-full bg-bg-neutral p-5 flex flex-col lg:flex-row gap-4 justify-between lg:px-48 md:px-32 pb-10">
         <div className="flex flex-col justify-center items-center xl:justify-start gap-4">
           <h1 className="text-2xl text-primary font-bold">
             Frequently Asked Questions

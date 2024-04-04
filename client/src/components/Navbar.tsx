@@ -13,7 +13,7 @@ export default function Navbar() {
         <li className="text-white">Contact Us</li>
         <li className="text-white">Blog</li>
       </ul>
-      <div className="flex gap-4">
+      <div className="flex gap-12">
         <a href="/user">
           <UserIcon className="size-6 text-white" />
         </a>
