@@ -199,7 +199,7 @@ const HomePage = () => {
           <span className="text-text-color">
             Here are some of the most asked questions
           </span>
-          <button>Ask A Question</button>
+          <Button onClick={() => {}} text="Ask a question" className="w-1/2" />
         </div>
         <div className="flex flex-col gap-4">
           {FAQ.map((faq, idx) => (

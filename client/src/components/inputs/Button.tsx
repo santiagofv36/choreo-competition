@@ -9,8 +9,9 @@ export default function Button({
   className = '',
   onClick,
   text,
-  variant,
+  variant = 'primary',
 }: ButtonProps) {
+
   return (
     <button
       className={`${className} w-full px-4 py-2 rounded-full ${
