@@ -24,12 +24,21 @@ const ROUTES = [
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
+  const { location } = window;
+
+  const islightNav = React.useMemo(() => {
+    return location.pathname === '/';
+  }, [location.pathname]);
 
   return (
-    <header className="flex justify-between items-center bg-transparent w-full lg:px-28 -mt-6 px-12">
-      <Logo className="text-white size-32" />
+    <header className="flex justify-between items-center bg-transparent w-full lg:px-28 -mt-6 px-12 absolute z-10 top-0 right-0">
+      <Logo
+        className={`${islightNav ? 'text-white' : 'text-primary'} size-32`}
+      />
       <Menu
-        className="text-white lg:hidden flex"
+        className={`${
+          islightNav ? 'text-white' : 'text-primary'
+        } lg:hidden flex`}
         role="button"
         onClick={() => setIsOpen(!isOpen)}
       />
@@ -49,16 +58,22 @@ export default function Navbar() {
       <ul className="lg:flex hidden gap-6">
         {ROUTES.map((route) => (
           <a href={route?.path ?? ''} id={route?.id}>
-            <li className="text-white">{route?.text}</li>
+            <li className={`${islightNav ? 'text-white' : 'text-primary'}`}>
+              {route?.text}
+            </li>
           </a>
         ))}
       </ul>
       <div className="lg:flex hidden gap-12">
         <a href="/user">
-          <UserIcon className="size-6 text-white" />
+          <UserIcon
+            className={`size-6 ${islightNav ? 'text-white' : 'text-primary'}`}
+          />
         </a>
         <a href="/cart">
-          <CartIcon className="size-6 text-white" />
+          <CartIcon
+            className={`size-6 ${islightNav ? 'text-white' : 'text-primary'}`}
+          />
         </a>
       </div>
     </header>

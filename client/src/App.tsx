@@ -5,7 +5,7 @@ import Navbar from './components/Navbar.tsx';
 
 function App() {
   return (
-    <main className="w-full max-h-full bg-primary">
+    <main className="w-full max-h-full">
       <Navbar />
       <RouterProvider router={BrowserRouter} />
       <Footer />

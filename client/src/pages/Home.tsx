@@ -60,9 +60,9 @@ const HomePage = () => {
   };
 
   return (
-    <main className="flex flex-col justify-center items-center">
+    <main className="flex flex-col justify-center items-center w-full">
       {/* introduction section */}
-      <section className="flex flex-col gap-4 justify-center items-center p-5 mb-12">
+      <section className="flex flex-col gap-4 justify-center items-center p-5 mb-12 bg-primary w-full py-32">
         <h1 className="text-2xl md:text-4xl font-bold text-white text-center">
           Your preffered place to shop.
         </h1>
