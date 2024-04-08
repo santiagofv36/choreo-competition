@@ -9,38 +9,88 @@ import {
   ProductPage,
   SignupPage,
 } from './pages';
+import Footer from './components/Footer';
+import Navbar from './components/Navbar';
 
 export const BrowserRouter = createBrowserRouter([
   {
     path: '/',
-    element: <HomePage />,
+    element: (
+      <>
+        <Navbar />
+        <HomePage />
+        <Footer />
+      </>
+    ),
   },
   {
     path: '/products',
-    element: <ProductPage />,
+    element: (
+      <>
+        <Navbar />
+        <ProductPage />
+        <Footer />
+      </>
+    ),
   },
   {
     path: '/products/:id',
-    element: <ProductDetailPage />,
+    element: (
+      <>
+        <Navbar />
+        <ProductDetailPage />
+        <Footer />
+      </>
+    ),
   },
   {
     path: '/cart',
-    element: <CartPage />,
+    element: (
+      <>
+        <Navbar />
+        <CartPage />
+        <Footer />
+      </>
+    ),
   },
   {
     path: '/checkout',
-    element: <CheckoutPage />,
+    element: (
+      <>
+        <Navbar />
+        <CheckoutPage />
+        <Footer />
+      </>
+    ),
   },
   {
     path: '/login',
-    element: <LoginPage />,
+    element: (
+      <>
+        <Navbar />
+        <LoginPage />
+        <Footer />
+      </>
+    ),
   },
   {
     path: '/signup',
-    element: <SignupPage />,
+    element: (
+      <>
+        <Navbar />
+        <SignupPage />
+        <Footer />
+      </>
+    ),
   },
   {
     path: '*',
-    element: <NotFoundPage />,
+    element: (
+      <>
+        <Navbar />
+        <NotFoundPage />
+        <Footer />
+      </>
+    ),
   },
 ]);
