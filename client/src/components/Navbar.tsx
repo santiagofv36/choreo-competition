@@ -3,6 +3,7 @@ import Logo from './icons/logoIcon';
 import UserIcon from './icons/UserIcon';
 import CartIcon from './icons/cartIcon';
 import { Menu } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const ROUTES = [
   {
@@ -46,22 +47,22 @@ export default function Navbar() {
         <div className="absolute top-16 right-4 bg-white text-primary p-4 w-48 transition-all ease-in-out duration-300 z-50">
           <ul className="flex flex-col gap-4">
             {ROUTES.map((route) => (
-              <a href={route?.path ?? ''} key={route?.id}>
+              <Link to={route?.path ?? ''} key={route?.id}>
                 <li className="border-b border-primary/3 pb-2">
                   {route?.text}
                 </li>
-              </a>
+              </Link>
             ))}
           </ul>
         </div>
       )}
       <ul className="lg:flex hidden gap-6">
         {ROUTES.map((route) => (
-          <a href={route?.path ?? ''} key={route?.id}>
+          <Link to={route?.path ?? ''} key={route?.id}>
             <li className={`${islightNav ? 'text-white' : 'text-primary'}`}>
               {route?.text}
             </li>
-          </a>
+          </Link>
         ))}
       </ul>
       <div className="lg:flex hidden gap-12">

@@ -1,8 +1,8 @@
 import React from 'react';
 import Input from '../components/inputs/Input';
 import Button from '../components/inputs/Button';
-import { useNavigate } from 'react-router';
 import ProductCard from '../components/cards/ProductCard';
+import { Link } from 'react-router-dom';
 
 const PRODUCTS = [
   {
@@ -54,11 +54,6 @@ const FAQ = [
 
 const HomePage = () => {
   const [search, setSearch] = React.useState('');
-  const navigate = useNavigate();
-
-  const handleViewAll = () => {
-    navigate('/products');
-  };
 
   return (
     <main className="flex flex-col justify-center items-center w-full">
@@ -157,11 +152,13 @@ const HomePage = () => {
               This are our most purchased products overtime
             </span>
           </div>
-          <Button
-            onClick={handleViewAll}
-            text="View All"
-            className="w-24 lg:w-28"
-          />
+          <Link to="/products">
+            <Button
+              text="View All"
+              className="w-24 lg:w-28"
+              onClick={() => window.scrollTo(0, 0)}
+            />
+          </Link>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {PRODUCTS.map((product, idx) => (
