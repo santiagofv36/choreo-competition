@@ -69,7 +69,11 @@ const HomePage = () => {
           We provide the best products for you
         </p>
         <div className="w-96">
-          <Input value={search} onChange={(e) => setSearch(e.target.value)} />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search for products"
+          />
         </div>
       </section>
       {/* Featured products */}

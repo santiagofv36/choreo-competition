@@ -5,11 +5,12 @@ interface ProductCardProps {
     image: string;
     price: number;
   };
+  className?: string;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, className }: ProductCardProps) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className={`flex flex-col gap-2 ${className}`}>
       <img
         src={product?.image}
         alt={product?.name}

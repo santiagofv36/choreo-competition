@@ -6,6 +6,7 @@ interface InputProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   variant?: 'primary' | 'secondary';
   className?: string;
+  placeholder?: string;
 }
 
 const Input = ({
@@ -13,6 +14,7 @@ const Input = ({
   onChange,
   variant = 'primary',
   className,
+  placeholder,
 }: InputProps) => {
   return (
     <div className="relative">
@@ -23,7 +25,7 @@ const Input = ({
             ? 'bg-quintiarty text-white placeholder:text-white/50'
             : 'bg-white text-text-color placeholder:text-gray-700/50'
         } border border-border-color text-text-color focus:ring-0  bg-transparent focus:outline-none focus:shadow-none `}
-        placeholder="Search for products"
+        placeholder={placeholder ?? 'Search'}
         value={value}
         onChange={onChange}
       />
