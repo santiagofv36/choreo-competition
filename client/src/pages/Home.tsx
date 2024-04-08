@@ -2,6 +2,7 @@ import React from 'react';
 import Input from '../components/inputs/Input';
 import Button from '../components/inputs/Button';
 import { useNavigate } from 'react-router';
+import ProductCard from '../components/cards/ProductCard';
 
 const PRODUCTS = [
   {
@@ -87,18 +88,7 @@ const HomePage = () => {
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {PRODUCTS.map((product, idx) => (
-            <div key={product?.id ?? idx} className="flex flex-col gap-2">
-              <img
-                src={product?.image}
-                alt={product?.name}
-                className="w-full lg:w-80 lg:h-96 rounded-xl"
-              />
-              <p className="font-bold">{product?.name}</p>
-              <div className="flex justify-between items-center">
-                <span className="text-sm">${product?.price}</span>
-                <button>+</button>
-              </div>
-            </div>
+            <ProductCard key={product?.id ?? idx} product={product} />
           ))}
         </div>
       </section>
@@ -175,18 +165,7 @@ const HomePage = () => {
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {PRODUCTS.map((product, idx) => (
-            <div key={product?.id ?? idx} className="flex flex-col gap-2">
-              <img
-                src={product?.image}
-                alt={product?.name}
-                className="w-full lg:w-80 lg:h-96 rounded-xl"
-              />
-              <p className="font-bold">{product?.name}</p>
-              <div className="flex justify-between items-center">
-                <span className="text-sm">${product?.price}</span>
-                <button>+</button>
-              </div>
-            </div>
+            <ProductCard key={product?.id ?? idx} product={product} />
           ))}
         </div>
       </section>
