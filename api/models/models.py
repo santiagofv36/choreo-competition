@@ -1,3 +1,4 @@
+from os import access
 from sqlalchemy import (
     Boolean,
     Column,
@@ -27,6 +28,7 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     password = Column(String)
     name = Column(String)
+    access_token = Column(String, default=None)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.datetime.utcnow)
 

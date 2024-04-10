@@ -20,6 +20,7 @@ class UserInDB(UserBase):
     email: Optional[str]
     password: Optional[str]
     name: Optional[str]
+    access_token: Optional[str]
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
 

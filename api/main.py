@@ -1,11 +1,7 @@
-from uuid import uuid4
-from fastapi import FastAPI, status, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from config_db import Base, engine
-from dependencies import get_db
-from models.models import Product
-from schemas.schemas import ProductBase, ProductInDB
+from controllers.auth_controller import router as auth_router
 
 
 def get_application():
@@ -35,6 +31,7 @@ def get_application():
         from controllers.products import router as products_router
         app.include_router(products_routers, prefix="/products")
     """
+    app.include_router(auth_router)
 
     return app
 
@@ -42,19 +39,6 @@ def get_application():
 app = get_application()
 
 
-@app.post("/test", status_code=status.HTTP_201_CREATED)
-async def create_test(product: ProductBase, db=Depends(get_db)):
-    """"""
-    db_product = Product(
-        id=uuid4(),
-        name=product.name,
-        description=product.description,
-        price=product.price,
-        category=product.category,
-        stock=product.stock,
-        availability=product.availability,
-    )
-    db.add(db_product)
-    db.commit()
-    db.refresh(db_product)
-    return db_product
+@app.get("/")
+def home():
+    return {"message": "Hello World"}
