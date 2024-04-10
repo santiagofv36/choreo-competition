@@ -18,23 +18,17 @@
     
 2. Instalar dependencias:
     ```bash
-    (venv) pip install -r backend/requirements.txt
- 
-3. Navega hacia Backend
-    ```bash
-    cd backend
+    (venv) pip install -r requirements.txt
     
-4. Para ejecutar la API, utiliza el siguiente comando:
+3. Para ejecutar la API, utiliza el siguiente comando:
     ```bash
-    (venv) python manage.py runserver
+    (venv) uvicorn main:app --reload
     
 ## Comandos útiles para manejo del Backend
 ### Asegúrate de estar en el entorno virtual
 
-1. Hacer migraciones
+1. Si se agrega una nueva dependencia correr el siguiente comando
+
     ```bash
-    (venv) python manage.py makemigrations
+    (venv) pip freeze > requirements.txt
     
-2. Hacer push de las migraciones hacia la DB
-    ```bash
-    (venv) python manage.py migrate
