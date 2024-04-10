@@ -31,4 +31,14 @@
 
     ```bash
     (venv) pip freeze > requirements.txt
+
+2. Hacer migraciones
+    
+    ```bash
+        (venv) alembic revision --autogenerate -m "Mensaje de la migración"
+
+3. Aplicar migraciones
+
+    ```bash
+        (venv) alembic upgrade head
     
