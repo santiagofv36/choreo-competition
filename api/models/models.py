@@ -1,4 +1,3 @@
-from os import access
 from sqlalchemy import (
     Boolean,
     Column,
@@ -49,7 +48,7 @@ class Product(Base):
     name = Column(String)
     description = Column(String)
     price = Column(Float)
-    category = Column(String)
+    category = Column(Uuid, ForeignKey("categories.id"))
     stock = Column(Integer)
     availability = Column(Boolean)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
@@ -59,6 +58,22 @@ class Product(Base):
     cart_items = relationship("CartItem", back_populates="product")
     order_items = relationship("OrderItem", back_populates="product")
     reviews = relationship("Review", back_populates="product")
+
+
+"""
+Modelo de la tabla de Category
+"""
+
+
+class Category(Base):
+    __tablename__ = "categories"
+
+    id = Column(Uuid, primary_key=True, index=True, default=uuid.uuid4())
+    name = Column(String)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+    products = relationship("Product", back_populates="category")
 
 
 """
