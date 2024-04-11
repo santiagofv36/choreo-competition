@@ -31,6 +31,7 @@ def get_application():
         from controllers.products import router as products_router
         app.include_router(products_routers, prefix="/products")
     """
+    
     app.include_router(auth_router)
 
     return app
@@ -42,3 +43,12 @@ app = get_application()
 @app.get("/")
 def home():
     return {"message": "Hello World"}
+
+
+''' 
+    TODO
+
+    
+
+
+ '''

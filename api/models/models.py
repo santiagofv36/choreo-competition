@@ -8,6 +8,7 @@ from sqlalchemy import (
     Float,
     ForeignKey,
 )
+
 from sqlalchemy.orm import relationship
 import datetime
 from config_db import Base
@@ -48,7 +49,7 @@ class Product(Base):
     name = Column(String)
     description = Column(String)
     price = Column(Float)
-    category = Column(Uuid, ForeignKey("categories.id"))
+    category_id = Column(Uuid, ForeignKey("categories.id"))
     stock = Column(Integer)
     availability = Column(Boolean)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
@@ -58,6 +59,7 @@ class Product(Base):
     cart_items = relationship("CartItem", back_populates="product")
     order_items = relationship("OrderItem", back_populates="product")
     reviews = relationship("Review", back_populates="product")
+    category = relationship("Category", back_populates="products")
 
 
 """

@@ -7,9 +7,8 @@ from starlette import status
 from schemas.schemas import UserBase
 from dtos.user import CreateUserRequest, LoginRequest, Token
 from dependencies import get_db
-
 from repositories.auth_repository import AuthRepository
-
+from repositories.shopping_cart_repository import ShoppingCartRepository
 
 router = APIRouter(
     prefix="/auth",
@@ -22,6 +21,7 @@ async def create_user(
     create_user_request: CreateUserRequest,
     db: Session = Depends(get_db),
     auth_repo: AuthRepository = Depends(AuthRepository),
+    cart_repo: ShoppingCartRepository = Depends(ShoppingCartRepository)
 ):
     """
     Creates a new user.
@@ -33,7 +33,13 @@ async def create_user(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="User already exists"
         )
-
+    
+    ''' Create corresponding shopping cart '''
+    try:
+        shopping_cart = await cart_repo.create_shopping_cart(db, user)
+    except HTTPException:
+        pass
+    
     return user
 
 

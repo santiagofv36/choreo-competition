@@ -14,6 +14,7 @@ from models.models import (
     Review,
     ShoppingCart,
     User,
+    Category
 )
 from dotenv import load_dotenv
 import os
