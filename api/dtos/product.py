@@ -7,7 +7,3 @@ class CreateProductRequest(BaseModel):
     category_id: str
     stock : int
     availability : bool
-
-
-class DeleteProductRequest(BaseModel):
-    pass

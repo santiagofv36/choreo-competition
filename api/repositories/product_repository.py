@@ -7,13 +7,12 @@ from dtos.product import CreateProductRequest
 from uuid import UUID
 
 class ProductRepository:
-    async def create_product(
+        async def create_product(
                 self,
                 db: Session,
                 product : CreateProductRequest
         ):
                 try:
-                        ''' Fetch the category '''
                         created_product = Product(
                                 name = product.name,
                                 description = product.description,
@@ -30,4 +29,19 @@ class ProductRepository:
                 except HTTPException as error:
                         print(error)
                         return
+
+        async def delete_product(
+                        sefl,
+                        db : Session,
+                        id : str
+        ):
+                try:
+                        product_to_delete = db.query(Product).get(id)
+                        db.delete(product_to_delete)
+                        db.commit()
+                        return
+                except HTTPException as error:
+                        print(error)
+                        return
+                
             

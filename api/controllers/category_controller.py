@@ -5,6 +5,7 @@ from starlette import status
 from dependencies import get_db
 from repositories.category_repository import CategoryRepository
 from dtos.category import CreateCategoryRequest
+from uuid import UUID
 
 router = APIRouter(
     prefix="/categories",
@@ -16,11 +17,11 @@ router = APIRouter(
 async def create_category(
     create_category_request: CreateCategoryRequest,
     db: Session = Depends(get_db),
-    prod_repo : CategoryRepository = Depends(CategoryRepository)
+    cat_repo : CategoryRepository = Depends(CategoryRepository)
 ):
-    """ Creates a new categpry """
+    """ Creates a new category """
 
-    category = await prod_repo.create_category(db,create_category_request)
+    category = await cat_repo.create_category(db,create_category_request)
 
     if not category:
         raise HTTPException(
@@ -28,3 +29,11 @@ async def create_category(
         )
     
     return category
+
+@router.delete("/delete/{id}",status_code=status.HTTP_204_NO_CONTENT)
+async def delete_category(
+    id : UUID,
+    db : Session = Depends(get_db),
+    cat_repo : CategoryRepository = Depends(CategoryRepository)
+):
+    await cat_repo.delete_category(db,id=id)

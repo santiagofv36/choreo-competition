@@ -6,6 +6,7 @@ from schemas.schemas import ProductBase
 from dependencies import get_db
 from repositories.product_repository import ProductRepository
 from dtos.product import CreateProductRequest
+from uuid import UUID
 
 router = APIRouter(
     prefix="/products",
@@ -29,3 +30,11 @@ async def create_product(
         )
     
     return product
+
+@router.delete("/delete/{id}",status_code=status.HTTP_204_NO_CONTENT)
+async def delete_product(
+    id : UUID,
+    db : Session = Depends(get_db),
+    prod_repo : ProductRepository = Depends(ProductRepository)
+):
+    await prod_repo.delete_product(db,id=id)
