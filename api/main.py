@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from config_db import Base, engine
 from controllers.auth_controller import router as auth_router
+from controllers.product_controller import router as prod_router
 
 
 def get_application():
@@ -33,6 +34,7 @@ def get_application():
     """
     
     app.include_router(auth_router)
+    app.include_router(prod_router)
 
     return app
 
