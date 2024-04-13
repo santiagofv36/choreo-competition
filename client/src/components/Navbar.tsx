@@ -47,7 +47,11 @@ export default function Navbar() {
         <div className="absolute top-16 right-4 bg-white text-primary p-4 w-48 transition-all ease-in-out duration-300 z-50">
           <ul className="flex flex-col gap-4">
             {ROUTES.map((route) => (
-              <Link to={route?.path ?? ''} key={route?.id}>
+              <Link
+                to={route?.path ?? ''}
+                key={route?.id}
+                onClick={() => setIsOpen(false)}
+              >
                 <li className="border-b border-primary/3 pb-2">
                   {route?.text}
                 </li>
