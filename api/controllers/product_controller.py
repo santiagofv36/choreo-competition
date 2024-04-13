@@ -28,3 +28,4 @@ async def create_product(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Product already exists"
         )
     
+    return product
