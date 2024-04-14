@@ -32,7 +32,7 @@ const PRODUCTS = [
   },
 ];
 
-export default function Product() {
+export default function ProductPage() {
   const [search, setSearch] = React.useState('');
 
   const pagination = {
