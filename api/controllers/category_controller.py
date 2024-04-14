@@ -37,3 +37,12 @@ async def delete_category(
     cat_repo : CategoryRepository = Depends(CategoryRepository)
 ):
     await cat_repo.delete_category(db,id=id)
+
+
+@router.get("")
+async def get_categories(
+    db : Session = Depends(get_db),
+    cat_repo : CategoryRepository = Depends(CategoryRepository)
+):
+    categories = await cat_repo.get_categories(db)
+    return categories
