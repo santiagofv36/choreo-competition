@@ -21,7 +21,7 @@ export default function AuthPage() {
     <Layout>
       <AuthLayout isReverse={isLogin}>
         <img
-          src={`./public/${isLogin ? 'login' : 'signup'}.webp`}
+          src={`/${isLogin ? 'login' : 'signup'}.webp`}
           alt="Signup"
           className={`rounded-${isLogin ? 'r' : 'l'}-xl`}
         />
