@@ -17,13 +17,13 @@ export default function Button({
       {...props}
       className={`${className} w-full px-4 py-2 rounded-full ${
         variant === 'primary'
-          ? 'bg-primary text-white'
-          : 'bg-white text-primary'
+          ? 'bg-secondary text-white'
+          : 'bg-white text-tertibg-secondary'
       } focus:outline-none focus:shadow-none ${
         variant === 'primary'
-          ? 'hover:bg-white hover:text-primary'
-          : 'hover:bg-primary hover:text-white'
-      } transition-all duration-300 ease-in-out font-semibold text-sm lg:text-base border border-primary`}
+          ? 'hover:bg-white hover:text-secondary'
+          : 'hover:bg-secondary hover:text-white'
+      } transition-all duration-300 ease-in-out font-semibold text-sm lg:text-base border border-secondary`}
       onClick={onClick}
     >
       {text}

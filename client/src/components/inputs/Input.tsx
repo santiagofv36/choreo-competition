@@ -23,7 +23,6 @@ const Input = ({
     <div className="relative">
       <input
         {...props}
-        type="text"
         className={` ${className} rounded-full px-4 py-2 w-full ${
           variant === 'primary'
             ? 'bg-quintiarty text-white placeholder:text-white/50'
