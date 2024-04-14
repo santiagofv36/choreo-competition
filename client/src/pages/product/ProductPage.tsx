@@ -1,9 +1,9 @@
 import React from 'react';
-import FilterCard from '../../components/FilterCard';
+import FilterCard from '../../components/cards/FilterCard';
 import Input from '../../components/inputs/Input';
 import ProductCard from '../../components/cards/ProductCard';
 import Button from '../../components/inputs/Button';
-import Layout from '../../components/Layout';
+import Layout from '../../components/layouts/Layout';
 
 const PRODUCTS = [
   {

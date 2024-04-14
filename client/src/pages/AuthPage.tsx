@@ -1,6 +1,6 @@
 import React from 'react';
-import Layout from '../components/Layout';
-import AuthLayout from '../components/AuthLayout';
+import Layout from '../components/layouts/Layout';
+import AuthLayout from '../components/layouts/AuthLayout';
 import LoginForm from '../components/forms/LoginForm';
 import { useLocation } from 'react-router';
 import SignupForm from '../components/forms/SignupForm';

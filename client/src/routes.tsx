@@ -7,8 +7,8 @@ import {
   ProductDetailPage,
   ProductPage,
 } from './pages';
-import Footer from './components/Footer';
-import Navbar from './components/Navbar';
+import Footer from './components/common/Footer';
+import Navbar from './components/common/Navbar';
 import AuthPage from './pages/AuthPage';
 
 export const BrowserRouter = createBrowserRouter([

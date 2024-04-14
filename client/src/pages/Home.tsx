@@ -2,7 +2,7 @@ import React from 'react';
 import Input from '../components/inputs/Input';
 import Button from '../components/inputs/Button';
 import { Link } from 'react-router-dom';
-import ProductsList from '../components/ProductsList';
+import ProductsList from '../components/products/ProductsList';
 
 const PRODUCTS = [
   {
