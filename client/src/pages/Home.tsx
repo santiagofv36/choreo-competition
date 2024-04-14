@@ -1,30 +1,30 @@
 import React from 'react';
 import Input from '../components/inputs/Input';
 import Button from '../components/inputs/Button';
-import ProductCard from '../components/cards/ProductCard';
 import { Link } from 'react-router-dom';
+import ProductsList from '../components/ProductsList';
 
 const PRODUCTS = [
   {
-    id: 1,
+    id: '1',
     name: 'Product name',
     price: 100,
     image: 'https://via.placeholder.com/150',
   },
   {
-    id: 2,
+    id: '2',
     name: 'Product name',
     price: 100,
     image: 'https://via.placeholder.com/150',
   },
   {
-    id: 3,
+    id: '3',
     name: 'Product name',
     price: 100,
     image: 'https://via.placeholder.com/150',
   },
   {
-    id: 4,
+    id: '4',
     name: 'Product name',
     price: 100,
     image: 'https://via.placeholder.com/150',
@@ -77,20 +77,17 @@ const HomePage = () => {
         </div>
       </section>
       {/* Featured products */}
-      <section className="w-full bg-bg-neutral p-5 flex flex-col gap-4 lg:px-48 md:px-32">
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold text-primary">Featured products</h2>
+      <ProductsList
+        products={PRODUCTS}
+        title="Featured Products"
+        section={{ className: 'bg-bg-neutral' }}
+        rightComponent={
           <span className="text-wrap  w-48 md:w-72">
             For only this week this products have incredible discounts you can't
             miss
           </span>
-        </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {PRODUCTS.map((product, idx) => (
-            <ProductCard key={product?.id ?? idx} product={product} />
-          ))}
-        </div>
-      </section>
+        }
+      />
       {/* Categories */}
       <section className="w-full bg-bg-neutral p-5 justify-center items-center flex flex-col lg:px-48 md:px-32">
         <div className="flex flex-col justify-center items-center gap-4 w-full mb-12">
@@ -146,16 +143,12 @@ const HomePage = () => {
         </div>
       </section>
       {/* Popular products */}
-      <section className="w-full bg-bg-neutral p-5 flex flex-col gap-4 lg:px-48 md:px-32">
-        <div className="flex justify-between items-center">
-          <div className="flex flex-col gap-4">
-            <h2 className="text-2xl font-bold text-primary">
-              Most Popular Products
-            </h2>
-            <span className="text-sm text-secondary">
-              This are our most purchased products overtime
-            </span>
-          </div>
+      <ProductsList
+        products={PRODUCTS}
+        title="Most Popular Products"
+        subtitle="This are our most purchased products overtime"
+        section={{ className: 'bg-bg-neutral' }}
+        rightComponent={
           <Link to="/products">
             <Button
               text="View All"
@@ -163,13 +156,8 @@ const HomePage = () => {
               onClick={() => window.scrollTo(0, 0)}
             />
           </Link>
-        </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {PRODUCTS.map((product, idx) => (
-            <ProductCard key={product?.id ?? idx} product={product} />
-          ))}
-        </div>
-      </section>
+        }
+      />
       {/* FAQ */}
       <section className="w-full bg-bg-neutral p-5 flex flex-col lg:flex-row gap-4 justify-between lg:px-48 md:px-32 pb-10">
         <div className="flex flex-col justify-center items-center xl:justify-start gap-4">
