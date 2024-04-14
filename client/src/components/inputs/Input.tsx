@@ -1,7 +1,7 @@
 import React from 'react';
 import SearchIcon from '../icons/SearchIcon';
 
-interface InputProps {
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   value: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   variant?: 'primary' | 'secondary';
@@ -17,10 +17,12 @@ const Input = ({
   className,
   placeholder,
   isSearch = true,
+  ...props
 }: InputProps) => {
   return (
     <div className="relative">
       <input
+        {...props}
         type="text"
         className={` ${className} rounded-full px-4 py-2 w-full ${
           variant === 'primary'
