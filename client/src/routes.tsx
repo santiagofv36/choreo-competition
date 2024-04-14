@@ -3,14 +3,13 @@ import {
   CartPage,
   CheckoutPage,
   HomePage,
-  LoginPage,
   NotFoundPage,
   ProductDetailPage,
   ProductPage,
-  SignupPage,
 } from './pages';
 import Footer from './components/Footer';
 import Navbar from './components/Navbar';
+import AuthPage from './pages/AuthPage';
 
 export const BrowserRouter = createBrowserRouter([
   {
@@ -64,21 +63,11 @@ export const BrowserRouter = createBrowserRouter([
     ),
   },
   {
-    path: '/login',
+    path: '/auth',
     element: (
       <>
         <Navbar />
-        <LoginPage />
-        <Footer />
-      </>
-    ),
-  },
-  {
-    path: '/signup',
-    element: (
-      <>
-        <Navbar />
-        <SignupPage />
+        <AuthPage />
         <Footer />
       </>
     ),
