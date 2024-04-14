@@ -1,4 +1,4 @@
-import ProductCard from './cards/ProductCard';
+import ProductCard from '../cards/ProductCard';
 
 interface ProductsListProps {
   products: {
