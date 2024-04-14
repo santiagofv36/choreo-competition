@@ -1,4 +1,4 @@
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
   variant?: 'primary' | 'secondary';
   onClick: () => void;
@@ -10,10 +10,11 @@ export default function Button({
   onClick,
   text,
   variant = 'primary',
+  ...props
 }: ButtonProps) {
-
   return (
     <button
+      {...props}
       className={`${className} w-full px-4 py-2 rounded-full ${
         variant === 'primary'
           ? 'bg-primary text-white'
