@@ -7,6 +7,7 @@ from dependencies import get_db
 from repositories.product_repository import ProductRepository
 from dtos.product import CreateProductRequest
 from uuid import UUID
+from utils import PaginatedResponse
 
 router = APIRouter(
     prefix="/products",
@@ -38,3 +39,13 @@ async def delete_product(
     prod_repo : ProductRepository = Depends(ProductRepository)
 ):
     await prod_repo.delete_product(db,id=id)
+
+@router.get("")
+async def get_products_page(
+    page : int,
+    db : Session = Depends(get_db),
+    prod_repo : ProductRepository = Depends(ProductRepository)
+):
+    products = await prod_repo.get_products(db,page=page)
+    return products
+    

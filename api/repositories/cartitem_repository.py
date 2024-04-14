@@ -1,64 +1,61 @@
 from dependencies import get_db
-from models.models import Product,Category
+from models.models import CartItem
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from fastapi import HTTPException,status
-from dtos.product import CreateProductRequest
+from dtos.cartitem import CreateCartItemRequest
 from uuid import UUID
 from utils import PaginatedResponse
 
-class ProductRepository:
-
+class CartItemRepository:
+        
         pagesize = 50
 
-        async def create_product(
+        async def create_cartitem(
                 self,
                 db: Session,
-                product : CreateProductRequest
+                item : CreateCartItemRequest
         ):
                 try:
-                        created_product = Product(
-                                name = product.name,
-                                description = product.description,
-                                price = product.price,
-                                category_id = UUID(product.category_id),
-                                stock = product.stock,
-                                availability = product.availability
+                        created_cartitem = CartItem(
+                                product_id = UUID(item.product_id),
+                                shopping_cart_id = UUID(item.shopping_cart_id),
+                                quantity = item.quantity
                                 )
                
-                        db.add(created_product)
+                        db.add(created_cartitem)
                         db.commit()
-                        db.refresh(created_product)
-                        return created_product
+                        db.refresh(created_cartitem)
+                        return created_cartitem
                 except HTTPException as error:
                         print(error)
                         return
 
-        async def delete_product(
+        async def delete_cartitem(
                         self,
                         db : Session,
                         id : str
         ):
                 try:
-                        product_to_delete = db.query(Product).get(id)
+                        product_to_delete = db.query(CartItem).get(id)
                         db.delete(product_to_delete)
                         db.commit()
                         return
                 except HTTPException as error:
                         print(error)
                         return
-        async def get_products(
+        async def get_cartitems(
                 self,
                 db : Session,
                 page : int   
         ):
                 try:
                         response = PaginatedResponse(
-                                query = db.query(Product),
+                                query = db.query(CartItem),
                                 pagesize = self.pagesize
                         )
-                        paginated_products = response.get_paginated_results(page=page)
-                        return paginated_products
+                        paginated_cartitems = response.get_paginated_results(page=page)
+                        return paginated_cartitems
                 except HTTPException as error:
                         print(error)
                         return

@@ -37,4 +37,17 @@ class CategoryRepository:
                 except HTTPException as error:
                         print(error)
                         return
+        
+        async def get_categories(
+                self,
+                db : Session
+        ):
+                try:
+                        categories = db.query(Category).all()
+                        return categories
+                except HTTPException as error:
+                        print(error)
+                        return
+
+                        
             
