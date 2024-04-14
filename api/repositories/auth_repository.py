@@ -58,7 +58,13 @@ class AuthRepository:
         db.commit()
         db.refresh(user)
 
-        return {"access_token": access_token, "token_type": "bearer"}
+        return {
+            "user_id": user.user_id,
+            "email": user.email,
+            "username": user.username,
+            "name": user.name,
+            "access_token": access_token,
+        }
 
     def get_current_user(
         self=None, token: str = Depends(oauth2_bearer), db: Session = Depends(get_db)
