@@ -5,8 +5,12 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException,status
 from dtos.product import CreateProductRequest
 from uuid import UUID
+from utils import PaginatedResponse
 
 class ProductRepository:
+
+        pagesize = 50
+
         async def create_product(
                 self,
                 db: Session,
@@ -31,7 +35,7 @@ class ProductRepository:
                         return
 
         async def delete_product(
-                        sefl,
+                        self,
                         db : Session,
                         id : str
         ):
@@ -40,6 +44,21 @@ class ProductRepository:
                         db.delete(product_to_delete)
                         db.commit()
                         return
+                except HTTPException as error:
+                        print(error)
+                        return
+        async def get_products(
+                self,
+                db : Session,
+                page : int   
+        ):
+                try:
+                        response = PaginatedResponse(
+                                query = db.query(Product),
+                                pagesize = self.pagesize
+                        )
+                        paginated_products = response.get_paginated_results(page=page)
+                        return paginated_products
                 except HTTPException as error:
                         print(error)
                         return
