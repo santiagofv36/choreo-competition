@@ -20,11 +20,12 @@ class UserInDB(UserBase):
     email: Optional[str]
     password: Optional[str]
     name: Optional[str]
+    access_token: Optional[str]
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class ProductBase(BaseModel):
@@ -48,7 +49,7 @@ class ProductInDB(ProductBase):
     updated_at: Optional[datetime]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class ProductImageBase(BaseModel):
@@ -62,7 +63,7 @@ class ProductImageInDB(ProductImageBase):
     updated_at: Optional[datetime]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class CartItemBase(BaseModel):
@@ -78,7 +79,7 @@ class CartItemInDB(CartItemBase):
     updated_at: Optional[datetime]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class ShoppingCartBase(BaseModel):
@@ -94,7 +95,7 @@ class ShoppingCartInDB(ShoppingCartBase):
     updated_at: Optional[datetime]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class OrderItemBase(BaseModel):
@@ -110,7 +111,7 @@ class OrderItemInDB(OrderItemBase):
     updated_at: Optional[datetime]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class OrderBase(BaseModel):
@@ -136,7 +137,7 @@ class OrderInDB(OrderBase):
     updated_at: Optional[datetime]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class ReviewBase(BaseModel):
@@ -155,4 +156,4 @@ class ReviewInDB(ReviewBase):
     created_at: Optional[datetime]
 
     class Config:
-        orm_mode = True
+        from_attributes = True

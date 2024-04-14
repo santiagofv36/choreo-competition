@@ -7,6 +7,7 @@ interface InputProps {
   variant?: 'primary' | 'secondary';
   className?: string;
   placeholder?: string;
+  isSearch?: boolean;
 }
 
 const Input = ({
@@ -15,6 +16,7 @@ const Input = ({
   variant = 'primary',
   className,
   placeholder,
+  isSearch = true,
 }: InputProps) => {
   return (
     <div className="relative">
@@ -29,16 +31,18 @@ const Input = ({
         value={value}
         onChange={onChange}
       />
-      <div
-        className={`size-[35px] ${
-          variant === 'primary' ? 'bg-quartiarty' : 'bg-gray-500'
-        } absolute right-2 top-1 rounded-full focus:outline-none`}
-      >
-        <SearchIcon
-          className="absolute right-[6px] top-2 size-[20px] text-white rounded-full
+      {isSearch && (
+        <div
+          className={`size-[35px] ${
+            variant === 'primary' ? 'bg-quartiarty' : 'bg-gray-500'
+          } absolute right-2 top-1 rounded-full focus:outline-none`}
+        >
+          <SearchIcon
+            className="absolute right-[6px] top-2 size-[20px] text-white rounded-full
             "
-        />
-      </div>
+          />
+        </div>
+      )}
     </div>
   );
 };
