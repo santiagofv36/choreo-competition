@@ -41,6 +41,18 @@ async def create_user(
     except HTTPException:
         pass
 
+    user = await auth_repo.login(
+        db,
+        LoginRequest(
+            username=create_user_request.username, password=create_user_request.password
+        ),
+    )
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials"
+        )
+
     return user
 
 
