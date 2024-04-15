@@ -21,12 +21,6 @@ export default function LoginForm() {
 
   const navigate = useNavigate();
 
-  const user = useSelector((state: any) => state.api.user);
-
-  if (user) {
-    navigate('/');
-  }
-
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -57,10 +51,10 @@ export default function LoginForm() {
   }, [form.username, form.password]);
 
   return (
-    <form className="flex flex-col p-8 w-full px-20" onSubmit={onSubmit}>
+    <form className="flex flex-col p-8 w-full lg:px-20" onSubmit={onSubmit}>
       <header className="flex flex-col gap-4">
-        <h1 className="text-5xl font-bold text-start">Login</h1>
-        <p className="text-start text-xl">
+        <h1 className="lg:text-5xl text-3xl font-bold text-start">Login</h1>
+        <p className="text-start lg:text-xl text-lg">
           Don't have an account?{' '}
           <Link
             to="/auth?redirect=signup"
@@ -73,7 +67,7 @@ export default function LoginForm() {
       <div className="flex justify-between w-full gap-32">
         <div className="flex flex-col justify-between w-full">
           <div className="flex flex-col gap-4 w-full">
-            <label className="mt-8 text-xl text-primary/70">Username</label>
+            <label className="mt-8 lg:text-xl text-lg text-primary/70">Username</label>
             <Input
               type="text"
               placeholder="Username"
@@ -87,7 +81,7 @@ export default function LoginForm() {
             />
           </div>
           <div className="flex flex-col gap-4 w-full">
-            <label className="mt-8 text-xl text-primary/70">Password</label>
+            <label className="mt-8 lg:text-xl text-lg text-primary/70">Password</label>
             <Input
               type="password"
               placeholder="•••••••••"
@@ -106,7 +100,7 @@ export default function LoginForm() {
         text="Login"
         onClick={() => {}}
         variant="primary"
-        className="w-full mt-8 lg:text-xl"
+        className="w-full mt-8 lg:text-xl text-lg"
         type="submit"
         disabled={isLoading}
       />

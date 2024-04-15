@@ -6,8 +6,8 @@ interface AuthLayoutProps {
 export default function AuthLayout({ children, isReverse }: AuthLayoutProps) {
   return (
     <section
-      className={`border border-border-color rounded-xl w-full shadow-xl flex justify-start relative h-[800px] ${
-        isReverse ? 'flex-row-reverse' : 'flex-row'
+      className={`border border-border-color rounded-xl w-full shadow-xl flex flex-col justify-start relative xl:h-[800px] ${
+        isReverse ? 'xl:flex-row-reverse' : 'xl:flex-row'
       }`}
     >
       {children}
