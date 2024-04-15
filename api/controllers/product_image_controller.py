@@ -1,29 +1,27 @@
-from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from starlette import status
-from schemas.schemas import ProductBase
 from dependencies import get_db
-from repositories.product_repository import ProductRepository
-from dtos.product import CreateProductRequest
+from repositories.product_image_repository import ProductImageRepository
+from dtos.product_image import CreateProductImageRequest
 from uuid import UUID
 from utils import PaginatedResponse
 
 router = APIRouter(
-    prefix="/products",
-    tags=["products"],
+    prefix="/product_images",
+    tags=["product_images"],
 )
 
 
 @router.post("/create", status_code=status.HTTP_201_CREATED)
-async def create_product(
-    create_product_request: CreateProductRequest,
+async def create_product_images(
+    create_prodim_request: CreateProductImageRequest,
     db: Session = Depends(get_db),
-    prod_repo : ProductRepository = Depends(ProductRepository)
+    prod_repo : ProductImageRepository = Depends(ProductImageRepository)
 ):
     """ Creates a new product """
 
-    product = await prod_repo.create_product(db,create_product_request)
+    product = await prod_repo.create_product_image(db,create_prodim_request)
 
     if not product:
         raise HTTPException(
@@ -33,19 +31,19 @@ async def create_product(
     return product
 
 @router.delete("/delete/{id}",status_code=status.HTTP_204_NO_CONTENT)
-async def delete_product(
+async def delete_product_image(
     id : UUID,
     db : Session = Depends(get_db),
-    prod_repo : ProductRepository = Depends(ProductRepository)
+    prod_repo : ProductImageRepository = Depends(ProductImageRepository)
 ):
-    await prod_repo.delete_product(db,id=id)
+    await prod_repo.delete_product_image(db,id=id)
 
 @router.get("")
-async def get_products_page(
+async def get_product_images_page(
     page : int,
     db : Session = Depends(get_db),
-    prod_repo : ProductRepository = Depends(ProductRepository)
+    prod_repo : ProductImageRepository = Depends(ProductImageRepository)
 ):
-    products = await prod_repo.get_products(db,page=page)
+    products = await prod_repo.get_product_images(db,page=page)
     return products
     

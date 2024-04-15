@@ -19,7 +19,6 @@ export default function Tabs({ tabs, onClick }: TabsProps) {
                   tab?.active ? 'text-primary' : 'text-primary/50'
                 }`}
                 onClick={() => {
-                  console.log(index);
                   onClick(tab?.title);
                 }}
               >

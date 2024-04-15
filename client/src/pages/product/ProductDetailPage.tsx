@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
-import Layout from '../../components/Layout';
+import Layout from '../../components/layouts/Layout';
 import { Heart, Minus, Plus, Star, StarHalf } from 'lucide-react';
 import Button from '../../components/inputs/Button';
 import TruckIcon from '../../components/icons/TruckIcon';
@@ -8,7 +8,7 @@ import PackageIcon from '../../components/icons/PackageIcon';
 import Tabs from '../../components/Tabs';
 import ReviewCard from '../../components/cards/ReviewCard';
 import ReviewForm from '../../components/forms/ReviewForm';
-import ProductsList from '../../components/ProductsList';
+import ProductsList from '../../components/products/ProductsList';
 
 interface Product {
   id: string;
