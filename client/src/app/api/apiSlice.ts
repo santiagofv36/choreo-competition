@@ -41,6 +41,28 @@ export const logoutUser = createAsyncThunk('auth/logout', async () => {
   }
 });
 
+export const registerUser = createAsyncThunk(
+  'auth/signup',
+  async (form: {
+    username: string;
+    email: string;
+    password: string;
+    name: string;
+  }) => {
+    try {
+      const response = await api.register(form);
+
+      const { access_token } = response.data;
+
+      document.cookie = `access_token=${access_token}`;
+
+      return response.data;
+    } catch (error: any) {
+      return Promise.reject(error.response.data);
+    }
+  }
+);
+
 // Define initial state
 const initialState = {
   user: null,
@@ -87,6 +109,17 @@ const authSlice = createSlice({
       .addCase(logoutUser.rejected, (state) => {
         state.loading = false;
         state.error = 'Failed to logout. Please try again.';
+      })
+      .addCase(registerUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(registerUser.rejected, (state) => {
+        state.loading = false;
+        state.error = 'Failed to register. Please try again.';
       });
   },
 });

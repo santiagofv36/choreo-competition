@@ -34,7 +34,12 @@ const api = {
       },
     });
   },
-  register: () => axiosInstance.post('/auth/register'),
+  register: (data: {
+    username: string;
+    email: string;
+    password: string;
+    name: string;
+  }) => axiosInstance.post('/auth/sign-up', data),
   getCurrentUser: () => axiosInstance.get('/auth'),
   logout: () => axiosInstance.delete('/auth/logout'),
 };

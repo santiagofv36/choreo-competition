@@ -1,7 +1,11 @@
-import { Link } from 'react-router-dom';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Link, useNavigate } from 'react-router-dom';
 import Input from '../inputs/Input';
 import React from 'react';
 import Button from '../inputs/Button';
+import { useDispatch, useSelector } from 'react-redux';
+import toast from 'react-hot-toast';
+import { registerUser } from '../../app/api/apiSlice';
 
 export default function SignupForm() {
   const [form, setForm] = React.useState({
@@ -11,15 +15,83 @@ export default function SignupForm() {
     confirmPassword: '',
     username: '',
     termsOfPolicy: false,
+    err: false,
   });
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const dispatch = useDispatch();
+
+  const isLoading = useSelector((state: any) => state.api.loading);
+
+  const navigate = useNavigate();
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (
+      !form.name ||
+      !form.email ||
+      !form.password ||
+      !form.confirmPassword ||
+      !form.username
+    ) {
+      setForm((prev) => ({ ...prev, err: true }));
+      toast.error('Please fill in all fields');
+      return;
+    }
+
+    if (form.password !== form.confirmPassword) {
+      setForm((prev) => ({ ...prev, err: true }));
+      toast.error('Passwords do not match');
+      return;
+    }
+
+    if (!form.termsOfPolicy) {
+      toast.error('Please agree to the terms of service and privacy policy');
+      return;
+    }
+
+    const result = await dispatch(
+      registerUser({
+        name: form.name,
+        email: form.email,
+        password: form.password,
+        username: form.username,
+      }) as any
+    );
+
+    if (result?.error) {
+      toast.error('An error occurred. Please try again');
+      return;
+    }
+
+    toast.success('Account created successfully');
+    setForm({
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      username: '',
+      termsOfPolicy: false,
+      err: false,
+    });
+    window.scrollTo(0, 0);
+    navigate('/');
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+
+  React.useEffect(() => {
+    setForm((prev) => ({ ...prev, err: false }));
+  }, [
+    form.name,
+    form.email,
+    form.password,
+    form.confirmPassword,
+    form.username,
+    form.termsOfPolicy,
+  ]);
 
   return (
     <form className="flex flex-col p-8 w-full" onSubmit={onSubmit}>
@@ -48,6 +120,8 @@ export default function SignupForm() {
             isSearch={false}
             variant="secondary"
             name="name"
+            err={form?.err}
+            disabled={isLoading}
           />
         </div>
         <div className="flex flex-col gap-4 w-full">
@@ -62,6 +136,8 @@ export default function SignupForm() {
             isSearch={false}
             variant="secondary"
             name="email"
+            err={form?.err}
+            disabled={isLoading}
           />
         </div>
       </div>
@@ -78,6 +154,8 @@ export default function SignupForm() {
             isSearch={false}
             variant="secondary"
             name="password"
+            err={form?.err}
+            disabled={isLoading}
           />
         </div>
         <div className="flex flex-col gap-4 w-full">
@@ -85,13 +163,15 @@ export default function SignupForm() {
             Confirm Password
           </label>
           <Input
-            type="email"
+            type="password"
             placeholder="••••••••••"
             value={form?.confirmPassword}
             onChange={handleChange}
             isSearch={false}
             variant="secondary"
             name="confirmPassword"
+            err={form?.err}
+            disabled={isLoading}
           />
         </div>
       </div>
@@ -108,6 +188,8 @@ export default function SignupForm() {
             isSearch={false}
             variant="secondary"
             name="username"
+            err={form?.err}
+            disabled={isLoading}
           />
         </div>
       </div>
@@ -122,6 +204,8 @@ export default function SignupForm() {
             variant="secondary"
             name="termsOfPolicy"
             className="w-5 h-5 mt-2"
+            err={form?.err}
+            disabled={isLoading}
           />
           <label className="lg:text-xl text-lg text-primary/70">
             I have read an greed to the Terms of Sevice and Privacy Policy
@@ -133,6 +217,7 @@ export default function SignupForm() {
           variant="primary"
           className="w-full mt-8"
           type="submit"
+          disabled={isLoading}
         />
       </div>
     </form>
