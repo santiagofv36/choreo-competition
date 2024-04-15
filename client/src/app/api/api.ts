@@ -36,6 +36,7 @@ const api = {
   },
   register: () => axiosInstance.post('/auth/register'),
   getCurrentUser: () => axiosInstance.get('/auth'),
+  logout: () => axiosInstance.delete('/auth/logout'),
 };
 
 export default api;

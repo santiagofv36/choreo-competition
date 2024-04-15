@@ -14,7 +14,6 @@ export const loginUser = createAsyncThunk(
 
       return response.data;
     } catch (error: any) {
-      // reject the promise returned from the thunk
       return Promise.reject(error.response.data);
     }
   }
@@ -24,6 +23,19 @@ export const getCurrentUser = createAsyncThunk('auth/', async () => {
   try {
     const response = await api.getCurrentUser();
     return response.data;
+  } catch (error: any) {
+    return Promise.reject(error.response.data);
+  }
+});
+
+export const logoutUser = createAsyncThunk('auth/logout', async () => {
+  try {
+    await api.logout();
+
+    document.cookie =
+      'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+
+    return Promise.resolve();
   } catch (error: any) {
     return Promise.reject(error.response.data);
   }
@@ -57,9 +69,24 @@ const authSlice = createSlice({
       .addCase(getCurrentUser.pending, (state) => {
         state.loading = true;
       })
+      .addCase(getCurrentUser.rejected, (state) => {
+        state.loading = false;
+        state.user = null;
+      })
       .addCase(getCurrentUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
+      })
+      .addCase(logoutUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.loading = false;
+        state.user = null;
+      })
+      .addCase(logoutUser.rejected, (state) => {
+        state.loading = false;
+        state.error = 'Failed to logout. Please try again.';
       });
   },
 });
