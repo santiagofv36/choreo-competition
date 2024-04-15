@@ -11,7 +11,7 @@ const Helper = () => {
   const dispatch = useDispatch();
   React.useEffect(() => {
     dispatch(getCurrentUser() as any);
-  }, []);
+  }, [dispatch]);
 
   return <div></div>;
 };
