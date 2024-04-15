@@ -8,6 +8,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   className?: string;
   placeholder?: string;
   isSearch?: boolean;
+  err?: boolean;
 }
 
 const Input = ({
@@ -17,17 +18,25 @@ const Input = ({
   className,
   placeholder,
   isSearch = true,
+  err,
   ...props
 }: InputProps) => {
   return (
     <div className="relative">
       <input
         {...props}
-        className={` ${className} rounded-full px-4 py-2 w-full ${
+        className={` ${className ?? ''} rounded-full px-4 py-2 w-full ${
           variant === 'primary'
             ? 'bg-quintiarty text-white placeholder:text-white/50'
             : 'bg-white text-text-color placeholder:text-gray-700/50'
-        } border border-border-color text-text-color focus:ring-0  bg-transparent focus:outline-none focus:shadow-none `}
+        } border border-border-color text-text-color focus:ring-0  bg-transparent focus:outline-none focus:shadow-none 
+        ${
+          err
+            ? 'border-danger placeholder:text-danger'
+            : 'border-border-color placeholder:text-gray-700/50'
+        }
+        disabled:bg-gray-200 disabled:cursor-not-allowed disabled:placeholder-gray-500 disabled:text-gray-500
+        `}
         placeholder={placeholder ?? 'Search'}
         value={value}
         onChange={onChange}
