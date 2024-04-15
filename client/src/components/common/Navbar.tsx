@@ -7,6 +7,7 @@ import { Menu } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../../app/api/apiSlice';
+import toast from 'react-hot-toast';
 
 const ROUTES = [
   {
@@ -43,6 +44,7 @@ export default function Navbar() {
   const handleLogout = async () => {
     setIsOpen(false);
     dispatch(logoutUser() as any);
+    toast.success('Logged out successfully');
     navigate('/auth?redirect=login');
   };
 
