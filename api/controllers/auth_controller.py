@@ -70,4 +70,23 @@ async def get_current_user(
     current_user: UserBase = Depends(AuthRepository.get_current_user),
 ):
     """"""
-    return current_user
+    return {
+        "user_id": current_user.user_id,
+        "email": current_user.email,
+        "username": current_user.username,
+        "name": current_user.name,
+        "access_token": current_user.access_token,
+    }
+
+
+@router.delete("/logout")
+async def logout(
+    current_user: UserBase = Depends(AuthRepository.get_current_user),
+    db: Session = Depends(get_db),
+    auth_repo: AuthRepository = Depends(AuthRepository),
+):
+    """
+    Logs out a user.
+    """
+    await auth_repo.logout(db, current_user)
+    return {"message": "Logged out successfully"}

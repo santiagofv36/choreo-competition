@@ -85,3 +85,8 @@ class AuthRepository:
             raise credential_exception from e
         except Exception as e:
             raise credential_exception from e
+
+    async def logout(self, db: Session, user: User):
+        user.access_token = None
+        db.commit()
+        return True
