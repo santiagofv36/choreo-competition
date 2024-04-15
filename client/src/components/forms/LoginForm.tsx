@@ -1,21 +1,60 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Link } from 'react-router-dom';
 import Input from '../inputs/Input';
 import React from 'react';
 import Button from '../inputs/Button';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from '../../app/api/apiSlice';
 
 export default function LoginForm() {
   const [form, setForm] = React.useState({
     username: '',
     password: '',
+    err: false,
   });
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const dispatch = useDispatch();
+
+  const isLoading = useSelector((state: any) => state.api.loading);
+
+  const navigate = useNavigate();
+
+  const user = useSelector((state: any) => state.api.user);
+
+  if (user) {
+    navigate('/');
+  }
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!form.username || !form.password) {
+      setForm((prev) => ({ ...prev, err: true }));
+      return;
+    }
+
+    const result = await dispatch(loginUser(form) as any);
+    if (result?.error) {
+      toast.error('Invalid Credentials');
+      setForm((prev) => ({ ...prev, err: true }));
+      return;
+    }
+
+    navigate('/');
+
+    toast.success('Logged in successfully');
+    setForm({ username: '', password: '', err: false });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+
+  React.useEffect(() => {
+    setForm((prev) => ({ ...prev, err: false }));
+  }, [form.username, form.password]);
 
   return (
     <form className="flex flex-col p-8 w-full px-20" onSubmit={onSubmit}>
@@ -43,6 +82,8 @@ export default function LoginForm() {
               isSearch={false}
               variant="secondary"
               name="username"
+              err={form?.err}
+              disabled={isLoading}
             />
           </div>
           <div className="flex flex-col gap-4 w-full">
@@ -55,6 +96,8 @@ export default function LoginForm() {
               isSearch={false}
               variant="secondary"
               name="password"
+              err={form?.err}
+              disabled={isLoading}
             />
           </div>
         </div>
@@ -65,6 +108,7 @@ export default function LoginForm() {
         variant="primary"
         className="w-full mt-8 lg:text-xl"
         type="submit"
+        disabled={isLoading}
       />
     </form>
   );
