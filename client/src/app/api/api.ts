@@ -45,6 +45,7 @@ const api = {
   productsPagination: (page: number = 1, perPage: number = 10) => {
     return axiosInstance.get(`/products?page=${page}&perPage=${perPage}`);
   },
+  productById: (id: string) => axiosInstance.get(`/products/${id}`),
 };
 
 export default api;
