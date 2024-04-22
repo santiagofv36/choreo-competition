@@ -50,3 +50,19 @@ async def get_products_pagination(
     prod_repo: ProductRepository = Depends(ProductRepository),
 ):
     return await prod_repo.get_products(db, page=page, perPage=perPage)
+
+
+@router.get("/{id}")
+async def get_product(
+    id: UUID,
+    db: Session = Depends(get_db),
+    prod_repo: ProductRepository = Depends(ProductRepository),
+):
+    product = await prod_repo.get_product(db, id=id)
+
+    if not product:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Product not found"
+        )
+
+    return product
