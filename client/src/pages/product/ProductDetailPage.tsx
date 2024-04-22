@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import Layout from '../../components/layouts/Layout';
@@ -8,7 +9,10 @@ import PackageIcon from '../../components/icons/PackageIcon';
 import Tabs from '../../components/Tabs';
 import ReviewCard from '../../components/cards/ReviewCard';
 import ReviewForm from '../../components/forms/ReviewForm';
-import ProductsList from '../../components/products/ProductsList';
+// import ProductsList from '../../components/products/ProductsList';
+import { useDispatch, useSelector } from 'react-redux';
+import { getProductById } from '../../app/api/productSlice';
+import toast from 'react-hot-toast';
 
 interface Product {
   id: string;
@@ -19,30 +23,12 @@ interface Product {
   numRatings?: number;
   isLiked?: boolean;
   detailedDescription: string[];
-  src?: string;
+  images: {
+    image: string;
+    id: string;
+  }[];
   stock: number;
 }
-
-const simulateGetProduct = async (id: string): Promise<Product> => {
-  return {
-    id,
-    name: 'Product Name',
-    price: 100,
-    description:
-      'This is a very long description of the product. It is very long and should be truncated. This product can be used for many things. It is very versatile.',
-    rating: 1.5,
-    numRatings: 100,
-    isLiked: !true,
-    detailedDescription: [
-      'Has 3 different colors',
-      'Has 3 different sizes',
-      'Has 3 different shapes',
-      'Has 3 different materials',
-    ],
-    src: 'https://via.placeholder.com/500',
-    stock: 10,
-  };
-};
 
 const REVIEWS = [
   {
@@ -83,37 +69,35 @@ const REVIEWS = [
   },
 ];
 
-const PRODUCTS = [
-  {
-    id: '1',
-    name: 'Product name',
-    price: 100,
-    image: 'https://via.placeholder.com/150',
-  },
-  {
-    id: '2',
-    name: 'Product name',
-    price: 100,
-    image: 'https://via.placeholder.com/150',
-  },
-  {
-    id: '3',
-    name: 'Product name',
-    price: 100,
-    image: 'https://via.placeholder.com/150',
-  },
-  {
-    id: '4',
-    name: 'Product name',
-    price: 100,
-    image: 'https://via.placeholder.com/150',
-  },
-];
+// const PRODUCTS = [
+//   {
+//     id: '1',
+//     name: 'Product name',
+//     price: 100,
+//     image: 'https://via.placeholder.com/150',
+//   },
+//   {
+//     id: '2',
+//     name: 'Product name',
+//     price: 100,
+//     image: 'https://via.placeholder.com/150',
+//   },
+//   {
+//     id: '3',
+//     name: 'Product name',
+//     price: 100,
+//     image: 'https://via.placeholder.com/150',
+//   },
+//   {
+//     id: '4',
+//     name: 'Product name',
+//     price: 100,
+//     image: 'https://via.placeholder.com/150',
+//   },
+// ];
 
 export default function ProductDetailPage() {
   const { id } = useParams();
-
-  const [product, setProduct] = React.useState<Product>();
 
   const [ammount, setAmmount] = React.useState<number>(1);
 
@@ -125,19 +109,18 @@ export default function ProductDetailPage() {
 
   const searchParams = new URLSearchParams(location.search);
 
+  const dispatch = useDispatch();
+
+  const product = useSelector((state: any) => state.products.product);
+
+  const isLoading = useSelector((state: any) => state.products.loading);
+
   const max = React.useMemo(
     () => ammount === product?.stock,
     [ammount, product?.stock]
   );
 
   const handleLike = () => {
-    setProduct(
-      () =>
-        product && {
-          ...product,
-          isLiked: !product.isLiked,
-        }
-    );
     handleSaveLike(product as Product);
   };
 
@@ -147,10 +130,12 @@ export default function ProductDetailPage() {
 
   React.useEffect(() => {
     window.scrollTo(0, 0);
-    simulateGetProduct(id as string).then((product) => {
-      setProduct(product);
-    });
-  }, [id, navigate]);
+
+    // Check if id has changed
+    if (id !== undefined && id !== product?.id) {
+      dispatch(getProductById(id!) as any);
+    }
+  }, [dispatch]);
 
   const handleTabClick = (tabName: string) => {
     if (tabName === 'Description') {
@@ -163,14 +148,38 @@ export default function ProductDetailPage() {
     navigate(`/products/${id}?${searchParams.toString().toLowerCase()}`);
   };
 
+  if (!product) {
+    return (
+      <Layout>
+        {isLoading && (
+          // replace for skeleton loader
+          <div className="fixed top-0 left-0 w-full h-full bg-white bg-opacity-70 z-50 flex justify-center items-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
+          </div>
+        )}
+        <div className="flex justify-center items-center h-96">
+          <h1 className="text-primary">Product not found</h1>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <>
+      {isLoading && (
+        // replace for skeleton loader
+        <div className="fixed top-0 left-0 w-full h-full bg-white bg-opacity-70 z-50 flex justify-center items-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
+        </div>
+      )}
       <Layout sectionClassName="pt-32 pb-0 mb-0">
         {/* Product Detail */}
         <div className="flex flex-col gap-4 xl:flex-row">
           <div id="left" className="flex w-full h-4/5">
             <img
-              src={product?.src ?? 'https://via.placeholder.com/500'}
+              src={
+                product?.images[0]?.image ?? 'https://via.placeholder.com/500'
+              }
               alt="Product Name"
               className="w-full md:size-5/6 lg:size-11/12 rounded-xl"
             />
@@ -198,10 +207,11 @@ export default function ProductDetailPage() {
               </h2>
               <span className="text-xl text-primary/70">|</span>
               <div className="flex relative gap-1 items-center">
-                {Array.from({ length: 5 }, () => (
+                {Array.from({ length: 5 }, (_, idx) => (
                   <Star
                     fill="#95a9a688"
                     size={19}
+                    key={idx * 8}
                     className="text-transparent"
                   />
                 ))}
@@ -233,23 +243,16 @@ export default function ProductDetailPage() {
                     )}
                 </div>
                 <span className="text-primary/70">
-                  ( {product?.numRatings} review
-                  {(product?.numRatings ?? 0) > 0 ? 's' : ''} )
+                  {product?.numRatings === undefined
+                    ? 'No reviews'
+                    : product?.numRatings > 1
+                    ? `${product?.numRatings} reviews`
+                    : `${product?.numRatings} review`}
                 </span>
               </div>
             </div>
             <div className="h-[1px] w-full  bg-border-color/30" />
             <p className="text-primary/70">{product?.description}</p>
-            {/* Detailed Description */}
-            <div className="flex flex-col gap-2">
-              <ul className="list-disc pl-5">
-                {product?.detailedDescription.map((detail, idx) => (
-                  <li key={idx} className="text-primary/70">
-                    {detail}
-                  </li>
-                ))}
-              </ul>
-            </div>
             {/* Ammount & add to cart */}
             <div className="flex flex-col gap-3 w-full">
               <div className="flex items-center gap-3 w-full justify-center">
@@ -338,7 +341,7 @@ export default function ProductDetailPage() {
         {!location.search.includes('reviews') && (
           <div className="flex flex-col gap-4">
             <p className="text-primary/70">{product?.description}</p>
-            <div className="flex flex-col gap-2">
+            {/* <div className="flex flex-col gap-2">
               <ul className="list-disc pl-5">
                 {product?.detailedDescription.map((detail, idx) => (
                   <li key={idx} className="text-primary/70">
@@ -346,15 +349,15 @@ export default function ProductDetailPage() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </div> */}
           </div>
         )}
         {location.search.includes('reviews') && (
           <div className="flex flex-col gap-16 lg:flex-row lg:gap-16">
             <div className="grid grid-cols-1 gap-16 w-full">
-              {REVIEWS.map((review, idx) => (
+              {/* {REVIEWS.map((review, idx) => (
                 <ReviewCard key={idx} review={review} />
-              ))}
+              ))} */}
             </div>
             {/* Make into separate component */}
             <ReviewForm />
@@ -362,11 +365,11 @@ export default function ProductDetailPage() {
         )}
       </section>
       {/* <SimilarProducts product={product} /> */}
-      <ProductsList
+      {/* <ProductsList
         title="Similar Products"
         products={PRODUCTS}
         section={{ className: 'bg-bg-neutral py-20 lg:px-16' }}
-      />
+      /> */}
     </>
   );
 }
