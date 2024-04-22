@@ -6,7 +6,7 @@ import CartIcon from '../icons/cartIcon';
 import { Menu } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { logoutUser } from '../../app/api/apiSlice';
+import { logoutUser } from '../../app/api/authSlice';
 import toast from 'react-hot-toast';
 
 const ROUTES = [
@@ -31,7 +31,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
   const { location } = window;
 
-  const user = useSelector((state: any) => state.api.user);
+  const user = useSelector((state: any) => state.auth.user);
 
   const navigate = useNavigate();
 

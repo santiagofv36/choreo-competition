@@ -10,25 +10,25 @@ const PRODUCTS = [
     id: '1',
     name: 'Product name',
     price: 100,
-    image: 'https://via.placeholder.com/150',
+    images: [{ image: 'https://via.placeholder.com/150', id: '1' }],
   },
   {
     id: '2',
     name: 'Product name',
     price: 100,
-    image: 'https://via.placeholder.com/150',
+    images: [{ image: 'https://via.placeholder.com/150', id: '2' }],
   },
   {
     id: '3',
     name: 'Product name',
     price: 100,
-    image: 'https://via.placeholder.com/150',
+    images: [{ image: 'https://via.placeholder.com/150', id: '3' }],
   },
   {
     id: '4',
     name: 'Product name',
     price: 100,
-    image: 'https://via.placeholder.com/150',
+    images: [{ image: 'https://via.placeholder.com/150', id: '4' }],
   },
 ];
 

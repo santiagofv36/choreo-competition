@@ -5,7 +5,7 @@ import React from 'react';
 import Button from '../inputs/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
-import { registerUser } from '../../app/api/apiSlice';
+import { registerUser } from '../../app/api/authSlice';
 
 export default function SignupForm() {
   const [form, setForm] = React.useState({

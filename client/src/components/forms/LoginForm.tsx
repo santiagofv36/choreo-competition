@@ -6,7 +6,7 @@ import Button from '../inputs/Button';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../../app/api/apiSlice';
+import { loginUser } from '../../app/api/authSlice';
 
 export default function LoginForm() {
   const [form, setForm] = React.useState({
@@ -67,7 +67,9 @@ export default function LoginForm() {
       <div className="flex justify-between w-full gap-32">
         <div className="flex flex-col justify-between w-full">
           <div className="flex flex-col gap-4 w-full">
-            <label className="mt-8 lg:text-xl text-lg text-primary/70">Username</label>
+            <label className="mt-8 lg:text-xl text-lg text-primary/70">
+              Username
+            </label>
             <Input
               type="text"
               placeholder="Username"
@@ -81,7 +83,9 @@ export default function LoginForm() {
             />
           </div>
           <div className="flex flex-col gap-4 w-full">
-            <label className="mt-8 lg:text-xl text-lg text-primary/70">Password</label>
+            <label className="mt-8 lg:text-xl text-lg text-primary/70">
+              Password
+            </label>
             <Input
               type="password"
               placeholder="•••••••••"

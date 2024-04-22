@@ -12,7 +12,7 @@ export default function Tabs({ tabs, onClick }: TabsProps) {
       <div className="flex justify-start gap-4 w-full">
         {tabs.map((tab, index) => {
           return (
-            <>
+            <div className="flex gap-4" key={index * 96}>
               <button
                 key={index}
                 className={`text-2xl font-bold ${
@@ -25,9 +25,14 @@ export default function Tabs({ tabs, onClick }: TabsProps) {
                 {tab?.title}
               </button>
               {index !== tabs.length - 1 && (
-                <span className="text-2xl font-bold text-primary">|</span>
+                <span
+                  className="text-2xl font-bold text-primary"
+                  key={index + 5}
+                >
+                  |
+                </span>
               )}
-            </>
+            </div>
           );
         })}
       </div>

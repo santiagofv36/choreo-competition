@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from './api';
+import { RootState } from '../store';
 
 export const loginUser = createAsyncThunk(
   'auth/login',
@@ -19,14 +20,23 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-export const getCurrentUser = createAsyncThunk('auth/', async () => {
-  try {
-    const response = await api.getCurrentUser();
-    return response.data;
-  } catch (error: any) {
-    return Promise.reject(error.response.data);
+export const getCurrentUser = createAsyncThunk(
+  'auth/',
+  async (_, { getState }) => {
+    try {
+      const state = getState() as RootState;
+
+      if (state.auth.attempttedCurrentUser) {
+        return state.auth.user;
+      }
+
+      const response = await api.getCurrentUser();
+      return response.data;
+    } catch (error: any) {
+      return Promise.reject(error.response.data);
+    }
   }
-});
+);
 
 export const logoutUser = createAsyncThunk('auth/logout', async () => {
   try {
@@ -68,6 +78,7 @@ const initialState = {
   user: null,
   loading: false,
   error: '',
+  attempttedCurrentUser: false,
 };
 
 // Define the slice
@@ -94,10 +105,12 @@ const authSlice = createSlice({
       .addCase(getCurrentUser.rejected, (state) => {
         state.loading = false;
         state.user = null;
+        state.attempttedCurrentUser = true;
       })
       .addCase(getCurrentUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
+        state.attempttedCurrentUser = true;
       })
       .addCase(logoutUser.pending, (state) => {
         state.loading = true;

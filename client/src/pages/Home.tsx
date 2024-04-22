@@ -1,35 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import Input from '../components/inputs/Input';
 import Button from '../components/inputs/Button';
 import { Link } from 'react-router-dom';
 import ProductsList from '../components/products/ProductsList';
-
-const PRODUCTS = [
-  {
-    id: '1',
-    name: 'Product name',
-    price: 100,
-    image: 'https://via.placeholder.com/150',
-  },
-  {
-    id: '2',
-    name: 'Product name',
-    price: 100,
-    image: 'https://via.placeholder.com/150',
-  },
-  {
-    id: '3',
-    name: 'Product name',
-    price: 100,
-    image: 'https://via.placeholder.com/150',
-  },
-  {
-    id: '4',
-    name: 'Product name',
-    price: 100,
-    image: 'https://via.placeholder.com/150',
-  },
-];
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProducts } from '../app/api/productSlice';
 
 const FAQ = [
   {
@@ -53,6 +29,20 @@ const FAQ = [
 ];
 
 const HomePage = () => {
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    dispatch(
+      fetchProducts({
+        page: 1,
+        perPage: 6,
+      }) as any
+    );
+  }, [dispatch]);
+
+  const PRODUCTS = useSelector((state: any) => state.products.products.content);
+  const isLoading = useSelector((state: any) => state.products.loading);
+
   const [search, setSearch] = React.useState('');
 
   return (
@@ -78,6 +68,7 @@ const HomePage = () => {
       </section>
       {/* Featured products */}
       <ProductsList
+        // isLoading={isLoading}
         products={PRODUCTS}
         title="Featured Products"
         section={{ className: 'bg-bg-neutral' }}
