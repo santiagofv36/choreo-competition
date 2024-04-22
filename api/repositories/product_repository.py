@@ -50,3 +50,15 @@ class ProductRepository:
         except HTTPException as error:
             print(error)
             return
+
+    async def get_product(self, db: Session, id: str):
+        try:
+            return (
+                db.query(Product)
+                .options(subqueryload(Product.images).load_only(ProductImage.image))
+                .filter(Product.id == id)
+                .first()
+            )
+        except HTTPException as error:
+            print(error)
+            return
