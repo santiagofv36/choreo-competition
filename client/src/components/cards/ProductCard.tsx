@@ -4,18 +4,23 @@ interface ProductCardProps {
   product: {
     id: string;
     name: string;
-    image: string;
+    images: {
+      id: string;
+      image: string;
+    }[];
     price: number;
   };
   className?: string;
 }
 
 export default function ProductCard({ product, className }: ProductCardProps) {
+  console.log(product);
+
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
       <Link to={`/products/${product?.id}`}>
         <img
-          src={product?.image}
+          src={product?.images[0]?.image}
           alt={product?.name}
           className="w-full lg:w-80 lg:h-96 rounded-xl"
         />
