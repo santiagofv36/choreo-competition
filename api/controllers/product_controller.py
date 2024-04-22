@@ -19,33 +19,34 @@ router = APIRouter(
 async def create_product(
     create_product_request: CreateProductRequest,
     db: Session = Depends(get_db),
-    prod_repo : ProductRepository = Depends(ProductRepository)
+    prod_repo: ProductRepository = Depends(ProductRepository),
 ):
-    """ Creates a new product """
+    """Creates a new product"""
 
-    product = await prod_repo.create_product(db,create_product_request)
+    product = await prod_repo.create_product(db, create_product_request)
 
     if not product:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Product already exists"
         )
-    
+
     return product
 
-@router.delete("/delete/{id}",status_code=status.HTTP_204_NO_CONTENT)
+
+@router.delete("/delete/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_product(
-    id : UUID,
-    db : Session = Depends(get_db),
-    prod_repo : ProductRepository = Depends(ProductRepository)
+    id: UUID,
+    db: Session = Depends(get_db),
+    prod_repo: ProductRepository = Depends(ProductRepository),
 ):
-    await prod_repo.delete_product(db,id=id)
+    await prod_repo.delete_product(db, id=id)
+
 
 @router.get("")
-async def get_products_page(
-    page : int,
-    db : Session = Depends(get_db),
-    prod_repo : ProductRepository = Depends(ProductRepository)
+async def get_products_pagination(
+    page: int = 1,
+    perPage: int = 8,
+    db: Session = Depends(get_db),
+    prod_repo: ProductRepository = Depends(ProductRepository),
 ):
-    products = await prod_repo.get_products(db,page=page)
-    return products
-    
+    return await prod_repo.get_products(db, page=page, perPage=perPage)
