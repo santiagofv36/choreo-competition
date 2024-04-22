@@ -7,13 +7,15 @@ class PaginatedResponse:
             self.content   = kwargs["content"]
             self.perPage   = kwargs["perPage"]
             self.pageCount = kwargs["pageCount"]
+            self.page      = kwargs["page"]
 
         def as_json(self):
-            return {"hasNext"   : self.hasNext,
+            return {"page"      : self.page,
+                    "hasNext"   : self.hasNext,
                     "hasPrev"   : self.hasPrev,
-                    "content"   : self.content,
                     "perPage"   : self.perPage,
-                    "pageCount" : self.pageCount
+                    "pageCount" : self.pageCount,
+                    "content"   : self.content,
                     }
  
     
@@ -27,11 +29,13 @@ class PaginatedResponse:
 
     def get_paginated_results(self,**kwargs):
         page_number = kwargs["page"]
+        page_count = self.count // self.pagesize + 1
         offset = (page_number - 1) * self.pagesize
         results = self._query.offset(offset).limit(self.pagesize).all()
         
         page = self.Page(
-            pageCount = page_number,
+            page      = page_number,
+            pageCount = page_count,
             hasNext   = self.has_next(page_number),
             hasPrev   = self.has_prev(page_number),
             content   = results,
