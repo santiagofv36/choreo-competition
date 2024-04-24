@@ -90,3 +90,15 @@ class AuthRepository:
         user.access_token = None
         db.commit()
         return True
+    
+
+    async def reset_password(self, db: Session, email: str, new_password: str):
+        user = db.query(User).filter(User.email == email).first()
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="An error occurred"
+            )
+        user.password = bcrypt_context.hash(new_password)
+        db.commit()
+        db.refresh(user)
+        return True
