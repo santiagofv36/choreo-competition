@@ -1,6 +1,6 @@
 from schemas.schemas import UserBase
 from dependencies import get_db
-from models.models import Product, Category, ProductImage, Review
+from models.models import Product, Category, ProductImage, Review, User
 from sqlalchemy import select
 from sqlalchemy.orm import Session, subqueryload
 from fastapi import HTTPException, status
@@ -45,9 +45,6 @@ class ProductRepository:
         try:
             query = db.query(Product).options(
                 subqueryload(Product.images).load_only(ProductImage.image),
-                subqueryload(Product.reviews).load_only(
-                    Review.rating, Review.review_String
-                ),
             )
             response = PaginatedResponse(query=query, pagesize=perPage)
             return response.get_paginated_results(page=page)
@@ -61,9 +58,6 @@ class ProductRepository:
                 db.query(Product)
                 .options(
                     subqueryload(Product.images).load_only(ProductImage.image),
-                    subqueryload(Product.reviews).load_only(
-                        Review.rating, Review.review_String
-                    ),
                 )
                 .filter(Product.id == id)
                 .first()
@@ -97,6 +91,23 @@ class ProductRepository:
             db.refresh(create_review)
             return create_review
 
+        except HTTPException as error:
+            print(error)
+            return
+
+    async def get_product_reviews_pagination(
+        self, db: Session, id: str, page: int, perPage: int
+    ):
+        try:
+            query = (
+                db.query(Review)
+                .options(
+                    subqueryload(Review.user).load_only(User.username, User.name),
+                )
+                .filter(Review.product_id == id)
+            )
+            response = PaginatedResponse(query=query, pagesize=perPage)
+            return response.get_paginated_results(page=page)
         except HTTPException as error:
             print(error)
             return

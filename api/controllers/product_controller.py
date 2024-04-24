@@ -78,3 +78,14 @@ async def review_product(
     prod_repo: ProductRepository = Depends(ProductRepository),
 ):
     return await prod_repo.review_product(current_user, db, id, review)
+
+
+@router.get("/{id}/reviews")
+async def get_product_reviews_pagination(
+    id: UUID,
+    page: int = 1,
+    perPage: int = 4,
+    db: Session = Depends(get_db),
+    prod_repo: ProductRepository = Depends(ProductRepository),
+):
+    return await prod_repo.get_product_reviews_pagination(db, id, page, perPage)
