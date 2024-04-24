@@ -102,3 +102,16 @@ async def logout(
     """
     await auth_repo.logout(db, current_user)
     return {"message": "Logged out successfully"}
+
+
+@router.patch("/reset-password")
+async def reset_password(
+    email: str,
+    new_password: str,
+    db: Session = Depends(get_db),
+    auth_repo: AuthRepository = Depends(AuthRepository),
+):
+    """
+    Resets a user's password.
+    """
+    return await auth_repo.reset_password(db, email, new_password)

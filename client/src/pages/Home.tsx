@@ -35,7 +35,7 @@ const HomePage = () => {
     dispatch(
       fetchProducts({
         page: 1,
-        perPage: 6,
+        perPage: 4,
       }) as any
     );
   }, [dispatch]);
@@ -90,46 +90,54 @@ const HomePage = () => {
             products
           </span>
         </div>
-        <div className="grid grid-cols-3 gap-8 w-full">
+        <div className="grid lg:grid-cols-3 gap-8 w-full">
           <div className="size-full relative">
             <img
-              src="https://via.placeholder.com/150"
+              src="electronic.webp"
               alt="Category"
               className="size-full rounded-xl h-96"
             />
-            <p className="absolute bottom-2 px-4 text-border-color">
-              Bedroom Furniture
+            <p className="absolute bottom-2 px-4 text-white z-10 text-xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
+              Electronics
             </p>
+            <div className="absolute bottom-0 left-0 w-full rounded-xl h-16 bg-gradient-to-t from-gray-300 to-transparent" />
           </div>
           <div className="size-full">
             <div className="flex flex-col items-center justify-center w-full gap-8">
-              <div className="w-full">
+              <div className="w-full relative">
                 <img
-                  src="https://via.placeholder.com/150"
+                  src="jewlry.webp"
                   alt="Category"
-                  className="w-full rounded-xl h-44"
+                  className="w-full rounded-xl lg:h-44 h-96 object-cover"
                 />
-                <p className="absolute bottom-1 px-4 text-border-color"></p>
+                <p className="absolute bottom-2 px-4 text-white z-10 text-xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
+                  Jewlry
+                </p>
+                <div className="absolute bottom-0 left-0 w-full rounded-xl h-16 bg-gradient-to-t from-gray-300 to-transparent" />
               </div>
-              <div className="w-full">
+              <div className="w-full relative">
                 <img
-                  src="https://via.placeholder.com/150"
+                  src="clothing.webp"
                   alt="Category"
-                  className="w-full rounded-xl h-44"
+                  className="w-full rounded-xl lg:h-44 h-96 object-cover"
                 />
-                <p className="absolute bottom-1 px-4 text-border-color"></p>
+                <p className="absolute bottom-2 px-4 text-white z-10 text-xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
+                  Clothing
+                </p>
+                <div className="absolute bottom-0 left-0 w-full rounded-xl h-16 bg-gradient-to-t from-gray-300 to-transparent" />
               </div>
             </div>
           </div>
           <div className="size-full relative">
             <img
-              src="https://via.placeholder.com/150"
+              src="bedroomfurniture.webp"
               alt="Category"
               className="size-full rounded-xl h-96"
             />
-            <p className="absolute bottom-2 px-4 text-border-color">
-              Bedroom Furniture
+            <p className="absolute bottom-2 px-4 text-white z-10 text-xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
+              Furniture
             </p>
+            <div className="absolute bottom-0 left-0 w-full rounded-xl h-16 bg-gradient-to-t from-gray-300 to-transparent" />
           </div>
         </div>
       </section>

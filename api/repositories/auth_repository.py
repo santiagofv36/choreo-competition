@@ -1,5 +1,6 @@
 from typing import Annotated, List
 import os
+import uuid
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
@@ -26,6 +27,7 @@ class AuthRepository:
     async def create_user(self, db: Session, user: CreateUserRequest):
         try:
             create_user_model = User(
+                user_id=uuid.uuid4(),
                 email=user.email,
                 username=user.username,
                 password=bcrypt_context.hash(user.password),
@@ -35,7 +37,8 @@ class AuthRepository:
             db.commit()
             db.refresh(create_user_model)
             return create_user_model
-        except:
+        except Exception as e:
+            print(e)
             return
 
     def create_access_token(self, username: str, id: str, time: timedelta):
@@ -89,4 +92,15 @@ class AuthRepository:
     async def logout(self, db: Session, user: User):
         user.access_token = None
         db.commit()
+        return True
+
+    async def reset_password(self, db: Session, email: str, new_password: str):
+        user = db.query(User).filter(User.email == email).first()
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="An error occurred"
+            )
+        user.password = bcrypt_context.hash(new_password)
+        db.commit()
+        db.refresh(user)
         return True

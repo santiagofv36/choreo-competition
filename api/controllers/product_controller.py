@@ -2,10 +2,11 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from starlette import status
-from schemas.schemas import ProductBase
+from repositories.auth_repository import AuthRepository
+from schemas.schemas import ProductBase, UserBase
 from dependencies import get_db
 from repositories.product_repository import ProductRepository
-from dtos.product import CreateProductRequest
+from dtos.product import CreateProductRequest, CreateReviewRequest
 from uuid import UUID
 from utils import PaginatedResponse
 
@@ -66,3 +67,25 @@ async def get_product(
         )
 
     return product
+
+
+@router.post("/{id}/review")
+async def review_product(
+    id: UUID,
+    review: CreateReviewRequest,
+    current_user: UserBase = Depends(AuthRepository.get_current_user),
+    db: Session = Depends(get_db),
+    prod_repo: ProductRepository = Depends(ProductRepository),
+):
+    return await prod_repo.review_product(current_user, db, id, review)
+
+
+@router.get("/{id}/reviews")
+async def get_product_reviews_pagination(
+    id: UUID,
+    page: int = 1,
+    perPage: int = 4,
+    db: Session = Depends(get_db),
+    prod_repo: ProductRepository = Depends(ProductRepository),
+):
+    return await prod_repo.get_product_reviews_pagination(db, id, page, perPage)
