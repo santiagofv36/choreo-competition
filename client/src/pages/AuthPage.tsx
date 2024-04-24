@@ -17,7 +17,7 @@ export default function AuthPage() {
 
   const navigate = useNavigate();
 
-  const user = useSelector((state: any) => state.api.user);
+  const user = useSelector((state: any) => state.auth.user);
 
   if (user) {
     navigate('/');
