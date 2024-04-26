@@ -15,11 +15,11 @@ export default function ReviewCard({ review }: ReviewCardProps) {
             alt={review?.user?.name}
             className="w-10 h-10 rounded-full"
           />
-          <span className="text-lg font-bold">{review?.user?.name}</span>
+          <span className="text-lg font-bold">{review?.user?.name ?? "John Doe"}</span>
         </div>
         <div className="flex relative gap-1 items-center">
-          {Array.from({ length: 5 }, () => (
-            <Star fill="#95a9a688" size={19} className="text-transparent" />
+          {Array.from({ length: 5 }, (_,idx) => (
+            <Star fill="#95a9a688" size={19} className="text-transparent" key={idx*15} />
           ))}
           <div className="flex gap-1 absolute top-[10.5px]">
             {Array.from(
