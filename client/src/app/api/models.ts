@@ -41,3 +41,13 @@ export interface ProductSlice {
   error: string;
   lastFetchedProducts: number;
 }
+
+export type Pagination<T> = Partial<{
+  itemCount: number;
+  content: T[];
+  page: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+  perPage: number;
+  pageCount: number;
+}>;
