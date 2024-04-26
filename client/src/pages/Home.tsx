@@ -41,7 +41,7 @@ const HomePage = () => {
   }, [dispatch]);
 
   const PRODUCTS = useSelector((state: any) => state.products.products.content);
-  const isLoading = useSelector((state: any) => state.products.loading);
+  // const isLoading = useSelector((state: any) => state.products.loading);
 
   const [search, setSearch] = React.useState('');
 

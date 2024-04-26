@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getProductById } from '../../app/api/productSlice';
 import { Pagination, Review } from '../../app/api/models';
 import { Pagination as PaginationFooter } from '../../components/common/Pagination';
-import toast from 'react-hot-toast';
+// import toast from 'react-hot-toast';
 
 interface Product {
   id: string;
@@ -121,7 +121,6 @@ export default function ProductDetailPage() {
         pageCount: 0,
       });
     };
-
   }, [dispatch]);
 
   React.useEffect(() => {
