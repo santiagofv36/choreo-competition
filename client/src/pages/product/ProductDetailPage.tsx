@@ -12,7 +12,7 @@ import ReviewForm from '../../components/forms/ReviewForm';
 // import ProductsList from '../../components/products/ProductsList';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProductById } from '../../app/api/productSlice';
-import toast from 'react-hot-toast';
+import { Review } from '../../app/api/models';
 
 interface Product {
   id: string;
@@ -29,45 +29,6 @@ interface Product {
   }[];
   stock: number;
 }
-
-const REVIEWS = [
-  {
-    id: '1',
-    user: {
-      name: 'John Doe',
-      image: 'https://via.placeholder.com/50',
-    },
-    rating: 4,
-    content: 'This is a great product. I would recommend it to anyone.',
-  },
-  {
-    id: '2',
-    user: {
-      name: 'Jane Doe',
-      image: 'https://via.placeholder.com/50',
-    },
-    rating: 2,
-    content: 'This is a great product. I would recommend it to anyone.',
-  },
-  {
-    id: '2',
-    user: {
-      name: 'Jane Doe',
-      image: 'https://via.placeholder.com/50',
-    },
-    rating: 3,
-    content: 'This is a great product. I would recommend it to anyone.',
-  },
-  {
-    id: '2',
-    user: {
-      name: 'Jane Doe',
-      image: 'https://via.placeholder.com/50',
-    },
-    rating: 1,
-    content: 'This is a great product. I would recommend it to anyone.',
-  },
-];
 
 // const PRODUCTS = [
 //   {
@@ -341,25 +302,15 @@ export default function ProductDetailPage() {
         {!location.search.includes('reviews') && (
           <div className="flex flex-col gap-4">
             <p className="text-primary/70">{product?.description}</p>
-            {/* <div className="flex flex-col gap-2">
-              <ul className="list-disc pl-5">
-                {product?.detailedDescription.map((detail, idx) => (
-                  <li key={idx} className="text-primary/70">
-                    {detail}
-                  </li>
-                ))}
-              </ul>
-            </div> */}
           </div>
         )}
         {location.search.includes('reviews') && (
           <div className="flex flex-col gap-16 lg:flex-row lg:gap-16">
-            <div className="grid grid-cols-1 gap-16 w-full">
-              {/* {REVIEWS.map((review, idx) => (
+            <div className="grid grid-cols-1 gap-4 w-full">
+              {product?.reviews?.content.map((review: Review, idx: number) => (
                 <ReviewCard key={idx} review={review} />
-              ))} */}
+              ))}
             </div>
-            {/* Make into separate component */}
             <ReviewForm />
           </div>
         )}
