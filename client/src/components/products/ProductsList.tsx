@@ -1,12 +1,8 @@
+import { Product } from '../../app/api/models';
 import ProductCard from '../cards/ProductCard';
 
 interface ProductsListProps {
-  products: {
-    id: string;
-    name: string;
-    price: number;
-    image: string;
-  }[];
+  products: Product[];
   title: string;
   subtitle?: string;
   rightComponent?: React.ReactNode;
