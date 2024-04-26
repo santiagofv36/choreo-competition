@@ -111,7 +111,7 @@ const HomePage = () => {
                   className="w-full rounded-xl lg:h-44 h-96 object-cover"
                 />
                 <p className="absolute bottom-2 px-4 text-white z-10 text-xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
-                  Jewlry
+                  Jewelry
                 </p>
                 <div className="absolute bottom-0 left-0 w-full rounded-xl h-16 bg-gradient-to-t from-gray-300 to-transparent" />
               </div>
