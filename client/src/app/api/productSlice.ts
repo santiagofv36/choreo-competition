@@ -3,8 +3,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from './api';
 import { RootState } from '../store';
+import { ProductSlice } from './models';
 
-const initialState = {
+const initialState: ProductSlice = {
   products: [],
   product: null,
   loading: false,
@@ -53,13 +54,18 @@ export const getProductById = createAsyncThunk(
       }
 
       const response = await api.productById(id);
+
+      const reviews = await api.reviewsByProductId(id);
+      response.data.reviews = reviews.data;
+
+      console.log(reviews);
+
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data);
     }
   }
 );
-
 
 const productSlice = createSlice({
   name: 'products',
