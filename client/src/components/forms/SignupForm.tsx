@@ -20,7 +20,7 @@ export default function SignupForm() {
 
   const dispatch = useDispatch();
 
-  const isLoading = useSelector((state: any) => state.api.loading);
+  const isLoading = useSelector((state: any) => state.auth.loading);
 
   const navigate = useNavigate();
 

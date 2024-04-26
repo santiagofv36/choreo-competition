@@ -46,6 +46,10 @@ const api = {
     return axiosInstance.get(`/products?page=${page}&perPage=${perPage}`);
   },
   productById: (id: string) => axiosInstance.get(`/products/${id}`),
+  reviewsByProductId: (id: string, page: number = 1, perPage: number = 5) =>
+    axiosInstance.get(
+      `/products/${id}/reviews?page=${page}&perPage=${perPage}`
+    ),
 };
 
 export default api;

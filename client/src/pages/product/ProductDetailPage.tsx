@@ -12,6 +12,8 @@ import ReviewForm from '../../components/forms/ReviewForm';
 // import ProductsList from '../../components/products/ProductsList';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProductById } from '../../app/api/productSlice';
+import { Pagination, Review } from '../../app/api/models';
+import { Pagination as PaginationFooter } from '../../components/common/Pagination';
 import toast from 'react-hot-toast';
 
 interface Product {
@@ -29,45 +31,6 @@ interface Product {
   }[];
   stock: number;
 }
-
-const REVIEWS = [
-  {
-    id: '1',
-    user: {
-      name: 'John Doe',
-      image: 'https://via.placeholder.com/50',
-    },
-    rating: 4,
-    content: 'This is a great product. I would recommend it to anyone.',
-  },
-  {
-    id: '2',
-    user: {
-      name: 'Jane Doe',
-      image: 'https://via.placeholder.com/50',
-    },
-    rating: 2,
-    content: 'This is a great product. I would recommend it to anyone.',
-  },
-  {
-    id: '2',
-    user: {
-      name: 'Jane Doe',
-      image: 'https://via.placeholder.com/50',
-    },
-    rating: 3,
-    content: 'This is a great product. I would recommend it to anyone.',
-  },
-  {
-    id: '2',
-    user: {
-      name: 'Jane Doe',
-      image: 'https://via.placeholder.com/50',
-    },
-    rating: 1,
-    content: 'This is a great product. I would recommend it to anyone.',
-  },
-];
 
 // const PRODUCTS = [
 //   {
@@ -115,6 +78,12 @@ export default function ProductDetailPage() {
 
   const isLoading = useSelector((state: any) => state.products.loading);
 
+  const [pagination, setPagination] = React.useState<Pagination<Review>>(() => {
+    if (product) {
+      return product.reviews;
+    }
+  });
+
   const max = React.useMemo(
     () => ammount === product?.stock,
     [ammount, product?.stock]
@@ -130,12 +99,42 @@ export default function ProductDetailPage() {
 
   React.useEffect(() => {
     window.scrollTo(0, 0);
-
     // Check if id has changed
     if (id !== undefined && id !== product?.id) {
-      dispatch(getProductById(id!) as any);
+      dispatch(
+        getProductById({
+          id,
+          reviewPage: pagination?.page ?? 1,
+          reviewPerPage: pagination?.perPage ?? 5,
+        }) as any // Add type assertion here if necessary
+      );
     }
+
+    return () => {
+      setPagination({
+        itemCount: 0,
+        content: [],
+        page: 1,
+        hasNext: false,
+        hasPrev: false,
+        perPage: 5,
+        pageCount: 0,
+      });
+    };
+
   }, [dispatch]);
+
+  React.useEffect(() => {
+    if (pagination && id) {
+      dispatch(
+        getProductById({
+          id,
+          reviewPage: pagination?.page ?? 1,
+          reviewPerPage: pagination?.perPage ?? 5,
+        }) as any // Add type assertion here if necessary
+      );
+    }
+  }, [pagination, dispatch, id]);
 
   const handleTabClick = (tabName: string) => {
     if (tabName === 'Description') {
@@ -341,25 +340,19 @@ export default function ProductDetailPage() {
         {!location.search.includes('reviews') && (
           <div className="flex flex-col gap-4">
             <p className="text-primary/70">{product?.description}</p>
-            {/* <div className="flex flex-col gap-2">
-              <ul className="list-disc pl-5">
-                {product?.detailedDescription.map((detail, idx) => (
-                  <li key={idx} className="text-primary/70">
-                    {detail}
-                  </li>
-                ))}
-              </ul>
-            </div> */}
           </div>
         )}
         {location.search.includes('reviews') && (
           <div className="flex flex-col gap-16 lg:flex-row lg:gap-16">
-            <div className="grid grid-cols-1 gap-16 w-full">
-              {/* {REVIEWS.map((review, idx) => (
+            <div className="grid grid-cols-1 gap-4 w-full">
+              {product?.reviews?.content.map((review: Review, idx: number) => (
                 <ReviewCard key={idx} review={review} />
-              ))} */}
+              ))}
+              <PaginationFooter
+                pagination={product?.reviews}
+                setPagination={setPagination}
+              />
             </div>
-            {/* Make into separate component */}
             <ReviewForm />
           </div>
         )}

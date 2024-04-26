@@ -1,15 +1,8 @@
 import { Star, StarHalf } from 'lucide-react';
+import { Review } from '../../app/api/models';
 
 interface ReviewCardProps {
-  review: {
-    id: string;
-    user: {
-      name: string;
-      image: string;
-    };
-    rating: number;
-    content: string;
-  };
+  review: Review;
 }
 
 export default function ReviewCard({ review }: ReviewCardProps) {
@@ -18,15 +11,15 @@ export default function ReviewCard({ review }: ReviewCardProps) {
       <div className="flex justify-between w-full">
         <div className="flex gap-4 items-center">
           <img
-            src={review?.user?.image}
+            src={review?.user?.image ?? 'https://via.placeholder.com/150'}
             alt={review?.user?.name}
             className="w-10 h-10 rounded-full"
           />
-          <span className="text-lg font-bold">{review?.user?.name}</span>
+          <span className="text-lg font-bold">{review?.user?.name ?? "John Doe"}</span>
         </div>
         <div className="flex relative gap-1 items-center">
-          {Array.from({ length: 5 }, () => (
-            <Star fill="#95a9a688" size={19} className="text-transparent" />
+          {Array.from({ length: 5 }, (_,idx) => (
+            <Star fill="#95a9a688" size={19} className="text-transparent" key={idx*15} />
           ))}
           <div className="flex gap-1 absolute top-[10.5px]">
             {Array.from(
@@ -51,7 +44,7 @@ export default function ReviewCard({ review }: ReviewCardProps) {
           </div>
         </div>
       </div>
-    <span className="text-primary/90 pl-12">{review?.content}</span>
+      <span className="text-primary/90 pl-12">{review?.review_String}</span>
     </div>
   );
 }

@@ -3,8 +3,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from './api';
 import { RootState } from '../store';
+import { ProductSlice } from './models';
 
-const initialState = {
+const initialState: ProductSlice = {
   products: [],
   product: null,
   loading: false,
@@ -43,23 +44,43 @@ export const fetchProducts = createAsyncThunk(
 
 export const getProductById = createAsyncThunk(
   'product',
-  async (id: string, { getState, rejectWithValue }) => {
+  async (
+    {
+      id,
+      reviewPage,
+      reviewPerPage,
+    }: { id: string; reviewPage: number; reviewPerPage: number },
+    { getState, rejectWithValue }
+  ) => {
     try {
       const state = getState() as RootState;
-      // Check if product is already in the store
+
       const { product } = state.products;
-      if ((product as any) && (product as any).id === id) {
-        return state.products.product;
-      }
 
       const response = await api.productById(id);
-      return response.data;
+
+      const reviewsResponse = await api.reviewsByProductId(
+        id,
+        reviewPage,
+        reviewPerPage
+      );
+
+      const productWithReviews = {
+        ...response.data,
+        reviews: reviewsResponse.data,
+      };
+
+      // Check if the product is already in the state
+      if (product?.id === productWithReviews.id) {
+        return productWithReviews;
+      }
+
+      return productWithReviews;
     } catch (error: any) {
       return rejectWithValue(error.response.data);
     }
   }
 );
-
 
 const productSlice = createSlice({
   name: 'products',
