@@ -58,8 +58,6 @@ export default function ProductDetailPage() {
     (state: any) => state.products.loadingReviews
   );
 
-  // const isLoadingReviews = true;
-
   const [pagination, setPagination] = React.useState<Pagination<Review>>(() => {
     if (product) {
       return product.reviews;
@@ -241,11 +239,11 @@ export default function ProductDetailPage() {
                     )}
                 </div>
                 <span className="text-primary/70">
-                  {product?.numRatings === undefined
-                    ? 'No reviews'
-                    : product?.numRatings > 1
-                    ? `${product?.numRatings} reviews`
-                    : `${product?.numRatings} review`}
+                  {product?.reviews?.itemCount === undefined
+                    ? '(No reviews)'
+                    : product?.reviews?.itemCount > 1
+                    ? `(${product?.reviews?.itemCount} reviews)`
+                    : `(${product?.reviews?.itemCount} review)`}
                 </span>
               </div>
             </div>
@@ -303,14 +301,14 @@ export default function ProductDetailPage() {
             {/* Shipping */}
             <div className="flex flex-col gap-4">
               <div className="flex gap-4 justify-start items-center">
-                <TruckIcon className="size-8 text-secondary-100" />
-                <span className="text-secondary-100">
+                <TruckIcon className="size-8 text-secondary" />
+                <span className="text-secondary">
                   Free shipping on orders over $50
                 </span>
               </div>
               <div className="flex gap-4 justify-start items-center">
-                <PackageIcon className="size-8 text-secondary-100" />
-                <span className="text-secondary-100">
+                <PackageIcon className="size-8 text-secondary" />
+                <span className="text-secondary">
                   Delivers in: 3-7 Working Days Shipping & Return
                 </span>
               </div>
@@ -351,7 +349,10 @@ export default function ProductDetailPage() {
               ) : isLoadingReviews ? (
                 <div className="flex flex-col gap-6 w-full">
                   {Array.from({ length: 5 }, (_, idx) => (
-                    <div key={idx} className="flex  w-full items-center space-x-4 p-5">
+                    <div
+                      key={idx}
+                      className="flex  w-full items-center space-x-4 p-5"
+                    >
                       <Skeleton className="h-12 w-12 rounded-full" />
                       <div className="space-y-2 w-3/4">
                         <Skeleton className="h-6 w-11/12" />

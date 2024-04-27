@@ -32,6 +32,7 @@ export interface Product {
     id: string;
   }>;
   reviews: Pagination<Review>;
+  rating: number;
 }
 
 export interface ProductSlice {
