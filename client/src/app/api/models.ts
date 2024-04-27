@@ -37,7 +37,9 @@ export interface Product {
 export interface ProductSlice {
   products: Product[];
   product: Product | null;
-  loading: boolean;
+  loadingProducts: boolean;
+  loadingProduct: boolean;
+  loadingReviews: boolean;
   error: string;
   lastFetchedProducts: number;
 }
