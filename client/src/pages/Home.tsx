@@ -41,7 +41,7 @@ const HomePage = () => {
   }, [dispatch]);
 
   const PRODUCTS = useSelector((state: any) => state.products.products.content);
-  // const isLoading = useSelector((state: any) => state.products.loading);
+  const isLoading = useSelector((state: any) => state.products.loadingProducts);
 
   const [search, setSearch] = React.useState('');
 
@@ -68,7 +68,7 @@ const HomePage = () => {
       </section>
       {/* Featured products */}
       <ProductsList
-        // isLoading={isLoading}
+        isLoading={isLoading}
         products={PRODUCTS}
         title="Featured Products"
         section={{ className: 'bg-bg-neutral' }}
@@ -143,6 +143,7 @@ const HomePage = () => {
       </section>
       {/* Popular products */}
       <ProductsList
+        isLoading={isLoading}
         products={PRODUCTS}
         title="Most Popular Products"
         subtitle="This are our most purchased products overtime"
