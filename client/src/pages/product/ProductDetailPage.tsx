@@ -15,6 +15,7 @@ import { Pagination as PaginationFooter } from '@/components/common/Pagination';
 // import ProductsList from '@/components/products/ProductsList';
 import { getProductById, getReviewsByProductId } from '@/app/api/productSlice';
 import { Pagination, Review } from '@/app/api/models';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface Product {
   id: string;
@@ -49,7 +50,15 @@ export default function ProductDetailPage() {
 
   const product = useSelector((state: any) => state.products.product);
 
-  const isLoading = useSelector((state: any) => state.products.loading);
+  const isLoadingProduct = useSelector(
+    (state: any) => state.products.loadingProduct
+  );
+
+  const isLoadingReviews = useSelector(
+    (state: any) => state.products.loadingReviews
+  );
+
+  // const isLoadingReviews = true;
 
   const [pagination, setPagination] = React.useState<Pagination<Review>>(() => {
     if (product) {
@@ -122,12 +131,6 @@ export default function ProductDetailPage() {
   if (!product) {
     return (
       <Layout>
-        {isLoading && (
-          // replace for skeleton loader
-          <div className="fixed top-0 left-0 w-full h-full bg-white bg-opacity-70 z-50 flex justify-center items-center">
-            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
-          </div>
-        )}
         <div className="flex justify-center items-center h-96">
           <h1 className="text-primary">Product not found</h1>
         </div>
@@ -135,14 +138,38 @@ export default function ProductDetailPage() {
     );
   }
 
+  if (isLoadingProduct) {
+    return (
+      <Layout>
+        <div className="flex flex-col gap-4 xl:flex-row w-full h-[500px]">
+          <div className="flex w-full h-4/5">
+            <Skeleton className="w-full md:size-5/6 lg:size-11/12 rounded-xl" />
+          </div>
+          <div className="flex flex-col gap-5 w-full h-96 md:px-0 lg:px-20">
+            <div className="flex justify-between w-full">
+              <Skeleton className="w-1/2 h-8" />
+            </div>
+            <div className="flex gap-1 items-center">
+              <Skeleton className="w-4/5 h-8" />
+            </div>
+            <div className="h-[1px] w-full" />
+            <div className="flex flex-col gap-3 w-full">
+              <div className="flex items-center gap-3 w-full justify-center">
+                <div className="flex w-2/6 lg:w-1/5">
+                  <Skeleton className="w-11/12 h-8" />
+                </div>
+                <Skeleton className="w-11/12 h-8" />
+              </div>
+              <Skeleton className="w-full h-8 mt-4" />
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <>
-      {isLoading && (
-        // replace for skeleton loader
-        <div className="fixed top-0 left-0 w-full h-full bg-white bg-opacity-70 z-50 flex justify-center items-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
-        </div>
-      )}
       <Layout sectionClassName="pt-32 pb-0 mb-0">
         {/* Product Detail */}
         <div className="flex flex-col gap-4 xl:flex-row">
@@ -290,7 +317,6 @@ export default function ProductDetailPage() {
             </div>
           </div>
         </div>
-        {/* Similar Products */}
       </Layout>
       {/* Description & Reviews */}
       <section className="w-full bg-border-color/30 flex flex-col py-16 px-8 lg:px-20 gap-4 mt-8 lg:mt-0">
@@ -316,14 +342,37 @@ export default function ProductDetailPage() {
         )}
         {location.search.includes('reviews') && (
           <div className="flex flex-col gap-16 lg:flex-row lg:gap-16">
+            {}
             <div className="grid grid-cols-1 gap-4 w-full">
-              {product?.reviews?.content.map((review: Review, idx: number) => (
-                <ReviewCard key={idx} review={review} />
-              ))}
-              <PaginationFooter
-                pagination={product?.reviews}
-                setPagination={setPagination}
-              />
+              {product?.reviews?.content.length === 0 ? (
+                <div className="flex justify-center items-center h-96">
+                  <h1 className="text-primary">No reviews yet</h1>
+                </div>
+              ) : isLoadingReviews ? (
+                <div className="flex flex-col gap-6 w-full">
+                  {Array.from({ length: 5 }, (_, idx) => (
+                    <div key={idx} className="flex  w-full items-center space-x-4 p-5">
+                      <Skeleton className="h-12 w-12 rounded-full" />
+                      <div className="space-y-2 w-3/4">
+                        <Skeleton className="h-6 w-11/12" />
+                        <Skeleton className="h-6 w-2/5" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <>
+                  {product?.reviews?.content.map(
+                    (review: Review, idx: number) => (
+                      <ReviewCard key={idx} review={review} />
+                    )
+                  )}
+                  <PaginationFooter
+                    pagination={product?.reviews}
+                    setPagination={setPagination}
+                  />
+                </>
+              )}
             </div>
             <ReviewForm />
           </div>
