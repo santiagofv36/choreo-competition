@@ -31,7 +31,7 @@ export interface Product {
     image: string;
     id: string;
   }>;
-  reviews: Array<Review>;
+  reviews: Pagination<Review>;
 }
 
 export interface ProductSlice {

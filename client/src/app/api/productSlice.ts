@@ -3,7 +3,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from './api';
 import { RootState } from '../store';
-import { ProductSlice } from './models';
+import { Product, ProductSlice } from './models';
 
 const initialState: ProductSlice = {
   products: [],
@@ -55,7 +55,13 @@ export const getProductById = createAsyncThunk(
     try {
       const state = getState() as RootState;
 
+      // Check if the product is already in the state
+
       const { product } = state.products;
+
+      if (product?.id === id) {
+        return product;
+      }
 
       const response = await api.productById(id);
 
@@ -65,17 +71,53 @@ export const getProductById = createAsyncThunk(
         reviewPerPage
       );
 
-      const productWithReviews = {
+      return {
         ...response.data,
         reviews: reviewsResponse.data,
       };
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const getReviewsByProductId = createAsyncThunk(
+  'reviews',
+  async (
+    { id, page, perPage }: { id: string; page: number; perPage: number },
+    { getState, rejectWithValue }
+  ) => {
+    try {
+      const state = getState() as RootState;
 
       // Check if the product is already in the state
-      if (product?.id === productWithReviews.id) {
-        return productWithReviews;
-      }
+      const { product } = state.products;
 
-      return productWithReviews;
+      if (
+        product?.id === id &&
+        product?.reviews &&
+        page === product.reviews?.page &&
+        perPage === product.reviews?.perPage
+      ) {
+        return product.reviews;
+      }
+      const response = await api.reviewsByProductId(id, page, perPage);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const reviewProduct = createAsyncThunk(
+  'review',
+  async (
+    { id, data }: { id: string; data: { rating: number; comment: string } },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await api.reviewProduct(id, data);
+      return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data);
     }
@@ -110,6 +152,16 @@ const productSlice = createSlice({
       state.loading = false;
       state.error = 'Error fetching product. Please try again.';
       state.product = null;
+    });
+    builder.addCase(getReviewsByProductId.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getReviewsByProductId.fulfilled, (state, action) => {
+      state.loading = false;
+      state.product = {
+        ...(state.product as Product),
+        reviews: action.payload,
+      };
     });
   },
 });
