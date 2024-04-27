@@ -1,7 +1,7 @@
 from schemas.schemas import UserBase
 from dependencies import get_db
 from models.models import Product, Category, ProductImage, Review, User
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session, subqueryload
 from fastapi import HTTPException, status
 from dtos.product import CreateProductRequest, CreateReviewRequest
@@ -108,6 +108,26 @@ class ProductRepository:
             )
             response = PaginatedResponse(query=query, pagesize=perPage)
             return response.get_paginated_results(page=page)
+        except HTTPException as error:
+            print(error)
+            return
+
+    async def get_featured_products(self, db: Session):
+        try:
+            """"""
+            # the way to calculate if a product is featured is based on two factors the ammount of reviews and the overall rating
+            query = (
+                db.query(
+                    Product,
+                )
+                .join(Review, Product.id == Review.product_id)
+                .group_by(Product.id, Product.name)
+                .having(func.avg(Review.rating) > 3)
+                .order_by(func.avg(Review.rating).desc())
+                .limit(4)
+            )
+            return query.all()
+
         except HTTPException as error:
             print(error)
             return
