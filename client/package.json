@@ -17,6 +17,7 @@
     "clsx": "^2.1.1",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.364.0",
+    "nprogress": "^0.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.12.7",
+    "@types/nprogress": "^0.2.3",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@typescript-eslint/eslint-plugin": "^7.2.0",

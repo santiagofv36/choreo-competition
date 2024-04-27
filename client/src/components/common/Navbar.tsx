@@ -4,6 +4,7 @@ import { Menu } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
+import nProgress from 'nprogress';
 import Logo from '@/components/icons/logoIcon';
 import UserIcon from '@/components/icons/UserIcon';
 import CartIcon from '@/components/icons/cartIcon';
@@ -42,10 +43,14 @@ export default function Navbar() {
   }, [location.pathname]);
 
   const handleLogout = async () => {
+    nProgress.start();
     setIsOpen(false);
     dispatch(logoutUser() as any);
-    toast.success('Logged out successfully');
-    navigate('/auth?redirect=login');
+    setTimeout(() => {
+      navigate('/auth?redirect=login');
+      toast.success('Logged out successfully');
+      nProgress.done();
+    }, 2000);
   };
 
   return (
