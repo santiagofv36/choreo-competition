@@ -60,6 +60,13 @@ async def get_featured(
 ):
     return await prod_repo.get_featured_products(db)
 
+@router.get("/popular")
+async def get_popular_products(
+    db: Session = Depends(get_db),
+    prod_repo: ProductRepository = Depends(ProductRepository),
+):
+    return await prod_repo.get_popular_products(db)
+
 
 @router.get("/{id}")
 async def get_product(

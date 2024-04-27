@@ -120,11 +120,31 @@ class ProductRepository:
                 db.query(
                     Product,
                 )
+                .options(subqueryload(Product.images).load_only(ProductImage.image))
                 .join(Review, Product.id == Review.product_id)
                 .group_by(Product.id, Product.name)
                 .having(func.avg(Review.rating) > 3)
                 .order_by(func.avg(Review.rating).desc())
                 .limit(4)
+            )
+            return query.all()
+
+        except HTTPException as error:
+            print(error)
+            return
+
+    async def get_popular_products(self, db: Session):
+        """Get the most popular products based on the ammount of reviews"""
+        try:
+            query = (
+                db.query(
+                    Product,
+                )
+                .options(subqueryload(Product.images).load_only(ProductImage.image))
+                .join(Review, Product.id == Review.product_id)
+                .group_by(Product.id, Product.name)
+                .order_by(func.count(Review.id).desc())
+                .limit(8)
             )
             return query.all()
 
