@@ -125,11 +125,11 @@ export default function ProductDetailPage() {
         {isLoading && (
           // replace for skeleton loader
           <div className="fixed top-0 left-0 w-full h-full bg-white bg-opacity-70 z-50 flex justify-center items-center">
-            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary-100"></div>
+            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
           </div>
         )}
         <div className="flex justify-center items-center h-96">
-          <h1 className="text-primary-100">Product not found</h1>
+          <h1 className="text-primary">Product not found</h1>
         </div>
       </Layout>
     );
@@ -140,7 +140,7 @@ export default function ProductDetailPage() {
       {isLoading && (
         // replace for skeleton loader
         <div className="fixed top-0 left-0 w-full h-full bg-white bg-opacity-70 z-50 flex justify-center items-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary-100"></div>
+          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
         </div>
       )}
       <Layout sectionClassName="pt-32 pb-0 mb-0">
@@ -161,7 +161,7 @@ export default function ProductDetailPage() {
           >
             {/* Name & Heart */}
             <div className="flex justify-between w-full">
-              <h1 className="lg:text-4xl text-lg font-bold text-primary-100 ">
+              <h1 className="lg:text-4xl text-lg font-bold text-primary ">
                 {product?.name}
               </h1>
               <Heart
@@ -173,10 +173,10 @@ export default function ProductDetailPage() {
             </div>
             {/* Price & ratings */}
             <div className="flex gap-1 items-center">
-              <h2 className="text-primary-100/70 text-xl">
+              <h2 className="text-primary/70 text-xl">
                 ${product?.price.toFixed(2)}
               </h2>
-              <span className="text-xl text-primary-100/70">|</span>
+              <span className="text-xl text-primary/70">|</span>
               <div className="flex relative gap-1 items-center">
                 {Array.from({ length: 5 }, (_, idx) => (
                   <Star
@@ -213,7 +213,7 @@ export default function ProductDetailPage() {
                       />
                     )}
                 </div>
-                <span className="text-primary-100/70">
+                <span className="text-primary/70">
                   {product?.numRatings === undefined
                     ? 'No reviews'
                     : product?.numRatings > 1
@@ -223,30 +223,30 @@ export default function ProductDetailPage() {
               </div>
             </div>
             <div className="h-[1px] w-full  bg-border-color/30" />
-            <p className="text-primary-100/70">{product?.description}</p>
+            <p className="text-primary/70">{product?.description}</p>
             {/* Ammount & add to cart */}
             <div className="flex flex-col gap-3 w-full">
               <div className="flex items-center gap-3 w-full justify-center">
-                <div className="flex w-2/6 lg:w-1/5 border border-primary-100 rounded-full text-sm justify-between items-center h-[42px]">
+                <div className="flex w-2/6 lg:w-1/5 border border-primary rounded-full text-sm justify-between items-center h-[42px]">
                   <button
                     onClick={() => setAmmount((prev) => prev - 1)}
-                    className={`w-1/3 text-center bg-white group-hover:bg-primary-100 group-hover:text-white transition-all duration-300 ease-in-out font-semibold text-sm lg:text-base  rounded-full h-full rounded-r-none ${
+                    className={`w-1/3 text-center bg-white group-hover:bg-primary group-hover:text-white transition-all duration-300 ease-in-out font-semibold text-sm lg:text-base  rounded-full h-full rounded-r-none ${
                       min ? 'pointer-events-none' : ''
                     }
-                  ${min ? 'disabled:text-primary-100/50' : ''}
+                  ${min ? 'disabled:text-primary/50' : ''}
                 `}
                     disabled={min}
                   >
                     <Minus
                       size={20}
                       className={`group-hover:text-white transition-all duration-300 ease-in-out ml-3 lg:ml-2
-                    ${min ? 'text-primary-100/30' : 'text-primary-100'}
+                    ${min ? 'text-primary/30' : 'text-primary'}
                   `}
                     />
                   </button>
                   <span
                     className={`bg-white size-full flex justify-center items-center text-lg ${
-                      max ? 'text-rose-500' : 'text-primary-100'
+                      max ? 'text-rose-500' : 'text-primary'
                     }`}
                     title={max ? 'Max Stock' : ''}
                   >
@@ -254,17 +254,17 @@ export default function ProductDetailPage() {
                   </span>
                   <button
                     onClick={() => setAmmount((prev) => prev + 1)}
-                    className={`w-1/3 text-center bg-white group-hover:bg-primary-100 group-hover:text-white transition-all duration-300 ease-in-out font-semibold text-sm lg:text-base  rounded-full h-full rounded-l-none ${
+                    className={`w-1/3 text-center bg-white group-hover:bg-primary group-hover:text-white transition-all duration-300 ease-in-out font-semibold text-sm lg:text-base  rounded-full h-full rounded-l-none ${
                       max ? 'pointer-events-none' : ''
                     } 
-                  ${max ? 'disabled:text-primary-100/50' : ''}
+                  ${max ? 'disabled:text-primary/50' : ''}
                 `}
                     disabled={max}
                   >
                     <Plus
                       size={20}
                       className={`group-hover:text-white transition-all duration-300 ease-in-out mr-1 lg:mr-2
-                    ${max ? 'text-primary-100/30' : 'text-primary-100'}
+                    ${max ? 'text-primary/30' : 'text-primary'}
                   `}
                     />
                   </button>
@@ -311,7 +311,7 @@ export default function ProductDetailPage() {
         />
         {!location.search.includes('reviews') && (
           <div className="flex flex-col gap-4">
-            <p className="text-primary-100/70">{product?.description}</p>
+            <p className="text-primary/70">{product?.description}</p>
           </div>
         )}
         {location.search.includes('reviews') && (
