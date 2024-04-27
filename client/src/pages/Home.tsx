@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
-import Input from '../components/inputs/Input';
-import Button from '../components/inputs/Button';
+import Input from '@/components/inputs/Input';
+import Button from '@/components/inputs/Button';
 import { Link } from 'react-router-dom';
-import ProductsList from '../components/products/ProductsList';
+import ProductsList from '@/components/products/ProductsList';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProducts } from '../app/api/productSlice';
+import { fetchProducts } from '@/app/api/productSlice';
 
 const FAQ = [
   {
