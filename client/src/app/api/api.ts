@@ -52,6 +52,8 @@ const api = {
     ),
   reviewProduct: (id: string, data: { rating: number; comment: string }) =>
     axiosInstance.post(`/products/${id}/reviews`, data),
+
+  featuredProducts: () => axiosInstance.get('/products/featured'),
 };
 
 export default api;

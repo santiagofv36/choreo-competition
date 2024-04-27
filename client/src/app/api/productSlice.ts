@@ -7,13 +7,16 @@ import { RootState } from '@/app/store';
 import { Pagination, Product, ProductSlice, Review } from '@/app/api/models';
 
 const initialState: ProductSlice = {
+  featuredProducts: [],
   products: [],
   product: null,
   loadingProducts: false,
   loadingProduct: false,
   loadingReviews: false,
+  loadingFeatured: false,
   error: '',
   lastFetchedProducts: 0, // Timestamp indicating when products were last fetched
+  lastFetchedFeatured: 0,
 };
 
 // Create a time threshold for caching (e.g., 5 minutes)
@@ -127,6 +130,27 @@ export const reviewProduct = createAsyncThunk(
   }
 );
 
+export const featuredProducts = createAsyncThunk(
+  'featured',
+  async (_, { getState }) => {
+    const state = getState() as RootState;
+
+    if (
+      Date.now() - state.products.lastFetchedFeatured <
+      CACHE_TIME_THRESHOLD
+    ) {
+      return state.products.featuredProducts;
+    }
+
+    try {
+      const response = await api.featuredProducts();
+      return response.data;
+    } catch (error) {
+      return Promise.reject();
+    }
+  }
+);
+
 const onLoad = (
   state: ProductSlice,
   loadingVariable: string = 'loadingProducts'
@@ -138,6 +162,8 @@ const onLoad = (
     state.loadingProduct = true;
   } else if (loadingVariable === 'loadingReviews') {
     state.loadingReviews = true;
+  } else if (loadingVariable === 'loadingFeatured') {
+    state.loadingFeatured = true;
   }
 };
 
@@ -152,6 +178,8 @@ const onFail = (
     state.loadingProduct = false;
   } else if (loadingVariable === 'loadingReviews') {
     state.loadingReviews = false;
+  } else if (loadingVariable === 'loadingFeatured') {
+    state.loadingFeatured = false;
   }
   state.error = error;
   nProgress.done();
@@ -175,6 +203,10 @@ const onSuccess = <T>(
       ...(state.product as Product),
       reviews: data as Pagination<Review>,
     };
+  } else if (loadingVariable === 'loadingFeatured') {
+    state.loadingFeatured = false;
+    state.featuredProducts = data as Product[];
+    state.lastFetchedFeatured = Date.now();
   }
   nProgress.done();
 };
@@ -207,6 +239,15 @@ const productSlice = createSlice({
     );
     builder.addCase(getReviewsByProductId.fulfilled, (state, action) =>
       onSuccess(state, action.payload, 'loadingReviews')
+    );
+    builder.addCase(featuredProducts.pending, (state) =>
+      onLoad(state, 'loadingFeatured')
+    );
+    builder.addCase(featuredProducts.fulfilled, (state, action) =>
+      onSuccess(state, action.payload, 'loadingFeatured')
+    );
+    builder.addCase(featuredProducts.rejected, (state) =>
+      onFail(state, 'loadingFeatured')
     );
   },
 });
