@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Link } from 'react-router-dom';
-import Input from '../inputs/Input';
 import React from 'react';
-import Button from '../inputs/Button';
+import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../../app/api/authSlice';
+import toast from 'react-hot-toast';
+import nProgress from 'nprogress';
+import { loginUser } from '@/app/api/authSlice';
+import Input from '@/components/inputs/Input';
+import Button from '@/components/inputs/Button';
 
 export default function LoginForm() {
   const [form, setForm] = React.useState({
@@ -23,6 +24,7 @@ export default function LoginForm() {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    nProgress.start();
 
     if (!form.username || !form.password) {
       setForm((prev) => ({ ...prev, err: true }));
@@ -33,6 +35,7 @@ export default function LoginForm() {
     if (result?.error) {
       toast.error('Invalid Credentials');
       setForm((prev) => ({ ...prev, err: true }));
+      nProgress.done();
       return;
     }
 
@@ -40,6 +43,7 @@ export default function LoginForm() {
 
     toast.success('Logged in successfully');
     setForm({ username: '', password: '', err: false });
+    nProgress.done();
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

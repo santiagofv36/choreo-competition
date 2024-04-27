@@ -1,4 +1,4 @@
-import { Pagination as PaginationModel } from '../../app/api/models';
+import { Pagination as PaginationModel } from '@/app/api/models';
 
 interface PaginationProps<T> {
   pagination: PaginationModel<T>;

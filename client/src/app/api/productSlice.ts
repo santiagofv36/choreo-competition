@@ -1,14 +1,17 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from './api';
-import { RootState } from '../store';
-import { ProductSlice } from './models';
+import nProgress from 'nprogress';
+import api from '@/app/api/api';
+import { RootState } from '@/app/store';
+import { Pagination, Product, ProductSlice, Review } from '@/app/api/models';
 
 const initialState: ProductSlice = {
   products: [],
   product: null,
-  loading: false,
+  loadingProducts: false,
+  loadingProduct: false,
+  loadingReviews: false,
   error: '',
   lastFetchedProducts: 0, // Timestamp indicating when products were last fetched
 };
@@ -55,7 +58,13 @@ export const getProductById = createAsyncThunk(
     try {
       const state = getState() as RootState;
 
+      // Check if the product is already in the state
+
       const { product } = state.products;
+
+      if (product?.id === id) {
+        return product;
+      }
 
       const response = await api.productById(id);
 
@@ -65,52 +74,140 @@ export const getProductById = createAsyncThunk(
         reviewPerPage
       );
 
-      const productWithReviews = {
+      return {
         ...response.data,
         reviews: reviewsResponse.data,
       };
-
-      // Check if the product is already in the state
-      if (product?.id === productWithReviews.id) {
-        return productWithReviews;
-      }
-
-      return productWithReviews;
     } catch (error: any) {
       return rejectWithValue(error.response.data);
     }
   }
 );
 
+export const getReviewsByProductId = createAsyncThunk(
+  'reviews',
+  async (
+    { id, page, perPage }: { id: string; page: number; perPage: number },
+    { getState, rejectWithValue }
+  ) => {
+    try {
+      const state = getState() as RootState;
+
+      // Check if the product is already in the state
+      const { product } = state.products;
+
+      if (
+        product?.id === id &&
+        product?.reviews &&
+        page === product.reviews?.page &&
+        perPage === product.reviews?.perPage
+      ) {
+        return product.reviews;
+      }
+      const response = await api.reviewsByProductId(id, page, perPage);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const reviewProduct = createAsyncThunk(
+  'review',
+  async (
+    { id, data }: { id: string; data: { rating: number; comment: string } },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await api.reviewProduct(id, data);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+const onLoad = (
+  state: ProductSlice,
+  loadingVariable: string = 'loadingProducts'
+) => {
+  nProgress.start();
+  if (loadingVariable === 'loadingProducts') {
+    state.loadingProducts = true;
+  } else if (loadingVariable === 'loadingProduct') {
+    state.loadingProduct = true;
+  } else if (loadingVariable === 'loadingReviews') {
+    state.loadingReviews = true;
+  }
+};
+
+const onFail = (
+  state: ProductSlice,
+  error: string,
+  loadingVariable: string = 'loadingProducts'
+) => {
+  if (loadingVariable === 'loadingProducts') {
+    state.loadingProducts = false;
+  } else if (loadingVariable === 'loadingProduct') {
+    state.loadingProduct = false;
+  } else if (loadingVariable === 'loadingReviews') {
+    state.loadingReviews = false;
+  }
+  state.error = error;
+  nProgress.done();
+};
+
+const onSuccess = <T>(
+  state: ProductSlice,
+  data: T,
+  loadingVariable: string = 'loadingProducts'
+) => {
+  if (loadingVariable === 'loadingProducts') {
+    state.loadingProducts = false;
+    state.products = data as Product[];
+    state.lastFetchedProducts = Date.now();
+  } else if (loadingVariable === 'loadingProduct') {
+    state.loadingProduct = false;
+    state.product = data as Product;
+  } else if (loadingVariable === 'loadingReviews') {
+    state.loadingReviews = false;
+    state.product = {
+      ...(state.product as Product),
+      reviews: data as Pagination<Review>,
+    };
+  }
+  nProgress.done();
+};
+
 const productSlice = createSlice({
   name: 'products',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchProducts.pending, (state) => {
-      state.loading = true;
-    });
-    builder.addCase(fetchProducts.fulfilled, (state, action) => {
-      state.loading = false;
-      state.products = action.payload;
-      state.lastFetchedProducts = Date.now();
-    });
-    builder.addCase(fetchProducts.rejected, (state) => {
-      state.loading = false;
-      state.error = 'Error fetching products. Please try again.';
-    });
-    builder.addCase(getProductById.pending, (state) => {
-      state.loading = true;
-    });
-    builder.addCase(getProductById.fulfilled, (state, action) => {
-      state.loading = false;
-      state.product = action.payload;
-    });
-    builder.addCase(getProductById.rejected, (state) => {
-      state.loading = false;
-      state.error = 'Error fetching product. Please try again.';
-      state.product = null;
-    });
+    builder.addCase(fetchProducts.pending, (state) =>
+      onLoad(state, 'loadingProducts')
+    );
+    builder.addCase(fetchProducts.fulfilled, (state, action) =>
+      onSuccess(state, action.payload, 'loadingProducts')
+    );
+    builder.addCase(fetchProducts.rejected, (state) =>
+      onFail(state, 'loadingProducts')
+    );
+    builder.addCase(getProductById.pending, (state) =>
+      onLoad(state, 'loadingProduct')
+    );
+    builder.addCase(getProductById.fulfilled, (state, action) =>
+      onSuccess(state, action.payload, 'loadingProduct')
+    );
+    builder.addCase(getProductById.rejected, (state) =>
+      onFail(state, 'loadingProduct')
+    );
+    builder.addCase(getReviewsByProductId.pending, (state) =>
+      onLoad(state, 'loadingReviews')
+    );
+    builder.addCase(getReviewsByProductId.fulfilled, (state, action) =>
+      onSuccess(state, action.payload, 'loadingReviews')
+    );
   },
 });
 

@@ -31,13 +31,15 @@ export interface Product {
     image: string;
     id: string;
   }>;
-  reviews: Array<Review>;
+  reviews: Pagination<Review>;
 }
 
 export interface ProductSlice {
   products: Product[];
   product: Product | null;
-  loading: boolean;
+  loadingProducts: boolean;
+  loadingProduct: boolean;
+  loadingReviews: boolean;
   error: string;
   lastFetchedProducts: number;
 }
