@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import React from 'react';
 import { RouterProvider } from 'react-router-dom';
-import { BrowserRouter } from './routes.tsx';
 import { Toaster } from 'react-hot-toast';
 import { Provider, useDispatch } from 'react-redux';
-import { store, persistor } from './app/store.ts';
-import React from 'react';
-import { getCurrentUser } from './app/api/authSlice.ts';
 import { PersistGate } from 'redux-persist/integration/react';
+import { BrowserRouter } from '@/routes.tsx';
+import { store, persistor } from '@/app/store.ts';
+import { getCurrentUser } from '@/app/api/authSlice.ts';
 
 const Helper = () => {
   const dispatch = useDispatch();

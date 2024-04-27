@@ -1,5 +1,5 @@
 import { Star, StarHalf } from 'lucide-react';
-import { Review } from '../../app/api/models';
+import { Review } from '@/app/api/models';
 
 interface ReviewCardProps {
   review: Review;

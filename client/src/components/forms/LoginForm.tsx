@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Link } from 'react-router-dom';
-import Input from '../inputs/Input';
 import React from 'react';
-import Button from '../inputs/Button';
+import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../../app/api/authSlice';
+import toast from 'react-hot-toast';
+import { loginUser } from '@/app/api/authSlice';
+import Input from '@/components/inputs/Input';
+import Button from '@/components/inputs/Button';
 
 export default function LoginForm() {
   const [form, setForm] = React.useState({

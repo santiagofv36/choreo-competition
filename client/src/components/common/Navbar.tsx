@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
-import Logo from '../icons/logoIcon';
-import UserIcon from '../icons/UserIcon';
-import CartIcon from '../icons/cartIcon';
 import { Menu } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { logoutUser } from '../../app/api/authSlice';
 import toast from 'react-hot-toast';
+import Logo from '@/components/icons/logoIcon';
+import UserIcon from '@/components/icons/UserIcon';
+import CartIcon from '@/components/icons/cartIcon';
+import { logoutUser } from '@/app/api/authSlice';
 
 const ROUTES = [
   {

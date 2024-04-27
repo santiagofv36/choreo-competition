@@ -1,9 +1,9 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from './api';
-import { RootState } from '../store';
-import { Product, ProductSlice } from './models';
+import api from '@/app/api/api';
+import { RootState } from '@/app/store';
+import { Product, ProductSlice } from '@/app/api/models';
 
 const initialState: ProductSlice = {
   products: [],

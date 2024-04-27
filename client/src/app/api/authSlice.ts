@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from './api';
-import { RootState } from '../store';
+import { RootState } from '@/app/store';
+import api from '@/app/api/api';
 
 export const loginUser = createAsyncThunk(
   'auth/login',

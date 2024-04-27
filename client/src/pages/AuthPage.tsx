@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
-import Layout from '../components/layouts/Layout';
-import AuthLayout from '../components/layouts/AuthLayout';
-import LoginForm from '../components/forms/LoginForm';
 import { useLocation, useNavigate } from 'react-router';
-import SignupForm from '../components/forms/SignupForm';
 import { useSelector } from 'react-redux';
+import Layout from '@/components/layouts/Layout';
+import AuthLayout from '@/components/layouts/AuthLayout';
+import LoginForm from '@/components/forms/LoginForm';
+import SignupForm from '@/components/forms/SignupForm';
 
 export default function AuthPage() {
   const location = useLocation();

@@ -1,8 +1,8 @@
 import React from 'react';
-import TextArea from '../inputs/TextArea';
-import StarSelector from '../inputs/StarSelector';
-import Button from '../inputs/Button';
-import { toast } from 'react-hot-toast';
+import toast from 'react-hot-toast';
+import TextArea from '@/components/inputs/TextArea';
+import StarSelector from '@/components/inputs/StarSelector';
+import Button from '@/components/inputs/Button';
 
 export default function ReviewForm() {
   const [reviewContent, setReviewContent] = React.useState<string>('');
