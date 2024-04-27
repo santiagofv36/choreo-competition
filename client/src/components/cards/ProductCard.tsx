@@ -15,7 +15,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, className }: ProductCardProps) {
   return (
-    <div className={`flex flex-col gap-2 ${className}`}>
+    <div className={`flex flex-col gap-2 ${className || ''}`}>
       <Link to={`/products/${product?.id}`}>
         <img
           src={product?.images[0]?.image}
