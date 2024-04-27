@@ -60,6 +60,7 @@ async def get_featured(
 ):
     return await prod_repo.get_featured_products(db)
 
+
 @router.get("/popular")
 async def get_popular_products(
     db: Session = Depends(get_db),
@@ -75,6 +76,8 @@ async def get_product(
     prod_repo: ProductRepository = Depends(ProductRepository),
 ):
     product = await prod_repo.get_product(db, id=id)
+
+    # print(product)
 
     if not product:
         raise HTTPException(

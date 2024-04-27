@@ -54,14 +54,25 @@ class ProductRepository:
 
     async def get_product(self, db: Session, id: str):
         try:
-            return (
-                db.query(Product)
+            """"""
+
+            product_with_rating = (
+                db.query(Product, func.avg(Review.rating).label("average_rating"))
                 .options(
                     subqueryload(Product.images).load_only(ProductImage.image),
                 )
+                .join(Review, Product.id == Review.product_id)
                 .filter(Product.id == id)
+                .group_by(Product.id)
+                .order_by(func.avg(Review.rating).desc())
                 .first()
             )
+
+            product = product_with_rating[0]
+            product.average_rating = product_with_rating[1]
+
+            return product
+
         except HTTPException as error:
             print(error)
             return
