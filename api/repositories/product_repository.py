@@ -69,7 +69,7 @@ class ProductRepository:
             )
 
             product = product_with_rating[0]
-            product.average_rating = product_with_rating[1]
+            product.rating = product_with_rating[1]
 
             return product
 
