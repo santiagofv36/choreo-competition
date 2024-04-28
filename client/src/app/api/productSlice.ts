@@ -292,7 +292,7 @@ const productSlice = createSlice({
       if (!state.product) {
         return;
       }
-      state.product.reviews.content!.unshift(action.payload as Review);
+      state.product.reviews.content!.push(action.payload as Review);
     });
     builder.addCase(reviewProduct.rejected, (state, action) => {
       state.error! = action.payload as object;
