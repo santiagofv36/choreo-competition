@@ -14,7 +14,7 @@ const initialState: ProductSlice = {
   loadingProduct: false,
   loadingReviews: false,
   loadingFeatured: false,
-  error: '',
+  error: null,
   lastFetchedProducts: 0, // Timestamp indicating when products were last fetched
   lastFetchedFeatured: 0,
 };
@@ -151,6 +151,38 @@ export const featuredProducts = createAsyncThunk(
   }
 );
 
+export const resetReviewPagination = createAsyncThunk(
+  'resetReviewPagination',
+  async (_, { getState }) => {
+    const state = getState() as RootState;
+
+    if (!state.products.product) {
+      return;
+    }
+
+    const { product } = state.products;
+
+    // if (!product?.reviews) {
+    //   return;
+    // }
+
+    // if (product.reviews.page === 1) {
+    //   return;
+    // }
+
+    try {
+      const response = await api.reviewsByProductId(
+        product.id,
+        1,
+        product.reviews.perPage
+      );
+      return response.data;
+    } catch (error: any) {
+      return Promise.reject(error.response.data);
+    }
+  }
+);
+
 const onLoad = (
   state: ProductSlice,
   loadingVariable: string = 'loadingProducts'
@@ -169,7 +201,7 @@ const onLoad = (
 
 const onFail = (
   state: ProductSlice,
-  error: string,
+  error: object,
   loadingVariable: string = 'loadingProducts'
 ) => {
   if (loadingVariable === 'loadingProducts') {
@@ -208,6 +240,7 @@ const onSuccess = <T>(
     state.featuredProducts = data as Product[];
     state.lastFetchedFeatured = Date.now();
   }
+  state.error = null;
   nProgress.done();
 };
 
@@ -222,8 +255,8 @@ const productSlice = createSlice({
     builder.addCase(fetchProducts.fulfilled, (state, action) =>
       onSuccess(state, action.payload, 'loadingProducts')
     );
-    builder.addCase(fetchProducts.rejected, (state) =>
-      onFail(state, 'loadingProducts')
+    builder.addCase(fetchProducts.rejected, (state, action) =>
+      onFail(state, action.payload as object, 'loadingProducts')
     );
     builder.addCase(getProductById.pending, (state) =>
       onLoad(state, 'loadingProduct')
@@ -231,8 +264,8 @@ const productSlice = createSlice({
     builder.addCase(getProductById.fulfilled, (state, action) =>
       onSuccess(state, action.payload, 'loadingProduct')
     );
-    builder.addCase(getProductById.rejected, (state) =>
-      onFail(state, 'loadingProduct')
+    builder.addCase(getProductById.rejected, (state, action) =>
+      onFail(state, action.payload as object, 'loadingProduct')
     );
     builder.addCase(getReviewsByProductId.pending, (state) =>
       onLoad(state, 'loadingReviews')
@@ -246,9 +279,24 @@ const productSlice = createSlice({
     builder.addCase(featuredProducts.fulfilled, (state, action) =>
       onSuccess(state, action.payload, 'loadingFeatured')
     );
-    builder.addCase(featuredProducts.rejected, (state) =>
-      onFail(state, 'loadingFeatured')
+    builder.addCase(featuredProducts.rejected, (state, action) =>
+      onFail(state, action.payload as object, 'loadingFeatured')
     );
+    builder.addCase(resetReviewPagination.fulfilled, (state, action) => {
+      state.product = {
+        ...(state.product as Product),
+        reviews: action.payload as Pagination<Review>,
+      };
+    });
+    builder.addCase(reviewProduct.fulfilled, (state, action) => {
+      if (!state.product) {
+        return;
+      }
+      state.product.reviews.content!.unshift(action.payload as Review);
+    });
+    builder.addCase(reviewProduct.rejected, (state, action) => {
+      state.error! = action.payload as object;
+    });
   },
 });
 

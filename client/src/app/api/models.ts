@@ -43,7 +43,7 @@ export interface ProductSlice {
   loadingProduct: boolean;
   loadingReviews: boolean;
   loadingFeatured: boolean;
-  error: string;
+  error: object | null;
   lastFetchedProducts: number;
   lastFetchedFeatured: number;
 }
