@@ -26,6 +26,10 @@ export const getCurrentUser = createAsyncThunk(
     try {
       const state = getState() as RootState;
 
+      if (document.cookie.indexOf('access_token=') === -1) {
+        return Promise.reject();
+      }
+
       if (state.auth.attempttedCurrentUser) {
         return state.auth.user;
       }
@@ -41,9 +45,6 @@ export const getCurrentUser = createAsyncThunk(
 export const logoutUser = createAsyncThunk('auth/logout', async () => {
   try {
     await api.logout();
-
-    document.cookie =
-      'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
 
     return Promise.resolve();
   } catch (error: any) {
@@ -98,6 +99,7 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state) => {
         state.loading = false;
         state.error = 'Invalid credentials. Please try again.';
+        state.user = null;
       })
       .addCase(getCurrentUser.pending, (state) => {
         state.loading = true;
@@ -118,6 +120,9 @@ const authSlice = createSlice({
       .addCase(logoutUser.fulfilled, (state) => {
         state.loading = false;
         state.user = null;
+        state.attempttedCurrentUser = false;
+        document.cookie =
+          'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
       })
       .addCase(logoutUser.rejected, (state) => {
         state.loading = false;
