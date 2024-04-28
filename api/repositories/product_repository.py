@@ -110,15 +110,29 @@ class ProductRepository:
         self, db: Session, id: str, page: int, perPage: int
     ):
         try:
-            query = (
-                db.query(Review)
-                .options(
-                    subqueryload(Review.user).load_only(User.username, User.name),
-                )
-                .filter(Review.product_id == id)
-            )
+            query = db.query(Review).filter(Review.product_id == id)
             response = PaginatedResponse(query=query, pagesize=perPage)
-            return response.get_paginated_results(page=page)
+            reviews = response.get_paginated_results(page=page)
+
+            content_w_user_data = []
+
+            for review in reviews["content"]:
+                user = db.query(User).filter(User.user_id == review.user_id).first()
+                content_w_user_data.append(
+                    {
+                        "id": review.id,
+                        "product_id": review.product_id,
+                        "rating": review.rating,
+                        "review_String": review.review_String,
+                        "created_at": review.created_at,
+                        "user": {"name": user.name, "username": user.username},
+                    }
+                )
+
+            reviews["content"] = content_w_user_data
+
+            return reviews
+
         except HTTPException as error:
             print(error)
             return
