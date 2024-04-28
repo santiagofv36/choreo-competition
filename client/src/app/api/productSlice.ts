@@ -20,7 +20,7 @@ const initialState: ProductSlice = {
 };
 
 // Create a time threshold for caching (e.g., 5 minutes)
-const CACHE_TIME_THRESHOLD = 5 * 60 * 1000; // 5 minutes in milliseconds
+const CACHE_TIME_THRESHOLD = 25 * 60 * 1000; // 5 minutes in milliseconds
 
 export const fetchProducts = createAsyncThunk(
   'products',
