@@ -11,7 +11,7 @@ export const loginUser = createAsyncThunk(
 
       const { access_token } = response.data;
 
-      document.cookie = `access_token=${access_token}`;
+      document.cookie = `access_token=${access_token}; path=/`;
 
       return response.data;
     } catch (error: any) {
