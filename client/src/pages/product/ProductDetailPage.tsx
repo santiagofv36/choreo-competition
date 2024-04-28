@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router';
+import { useLocation, useParams } from 'react-router';
 import { Heart, Minus, Plus, Star, StarHalf } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import Layout from '@/components/layouts/Layout';
@@ -13,9 +13,14 @@ import ReviewCard from '@/components/cards/ReviewCard';
 import ReviewForm from '@/components/forms/ReviewForm';
 import { Pagination as PaginationFooter } from '@/components/common/Pagination';
 // import ProductsList from '@/components/products/ProductsList';
-import { getProductById, getReviewsByProductId } from '@/app/api/productSlice';
+import {
+  getProductById,
+  getReviewsByProductId,
+  resetReviewPagination,
+} from '@/app/api/productSlice';
 import { Pagination, Review } from '@/app/api/models';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useCustomNavigate } from '@/hooks/use-previouspath';
 
 interface Product {
   id: string;
@@ -42,7 +47,7 @@ export default function ProductDetailPage() {
 
   const location = useLocation();
 
-  const navigate = useNavigate();
+  const navigate = useCustomNavigate();
 
   const searchParams = new URLSearchParams(location.search);
 
@@ -77,6 +82,18 @@ export default function ProductDetailPage() {
     console.log(product);
   };
 
+  const getReviews = () => {
+    if (pagination && id) {
+      dispatch(
+        getReviewsByProductId({
+          id,
+          page: pagination?.page ?? 1,
+          perPage: pagination?.perPage ?? 5,
+        }) as any // Add type assertion here if necessary
+      );
+    }
+  };
+
   React.useEffect(() => {
     window.scrollTo(0, 0);
     // Check if id has changed
@@ -91,27 +108,13 @@ export default function ProductDetailPage() {
     }
 
     return () => {
-      setPagination({
-        itemCount: 0,
-        content: [],
-        page: 1,
-        hasNext: false,
-        hasPrev: false,
-        perPage: 5,
-        pageCount: 0,
-      });
+      dispatch(resetReviewPagination() as any);
     };
   }, [dispatch]);
 
   React.useEffect(() => {
-    if (pagination && id) {
-      dispatch(
-        getReviewsByProductId({
-          id,
-          page: pagination?.page ?? 1,
-          perPage: pagination?.perPage ?? 5,
-        }) as any // Add type assertion here if necessary
-      );
+    if (product) {
+      getReviews();
     }
   }, [pagination, dispatch, id]);
 
@@ -375,7 +378,7 @@ export default function ProductDetailPage() {
                 </>
               )}
             </div>
-            <ReviewForm />
+            <ReviewForm id={product?.id} />
           </div>
         )}
       </section>

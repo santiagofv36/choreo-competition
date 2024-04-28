@@ -7,6 +7,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { BrowserRouter } from '@/routes.tsx';
 import { store, persistor } from '@/app/store.ts';
 import { getCurrentUser } from '@/app/api/authSlice.ts';
+import { PathProvider } from './hooks/use-previouspath';
 
 const Helper = () => {
   const dispatch = useDispatch();
@@ -24,7 +25,9 @@ function App() {
         <PersistGate loading={null} persistor={persistor}>
           <Toaster />
           <Helper />
-          <RouterProvider router={BrowserRouter} />
+          <PathProvider>
+            <RouterProvider router={BrowserRouter} />
+          </PathProvider>
         </PersistGate>
       </Provider>
     </main>
