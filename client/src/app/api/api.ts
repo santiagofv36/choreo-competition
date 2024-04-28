@@ -51,7 +51,7 @@ const api = {
       `/products/${id}/reviews?page=${page}&perPage=${perPage}`
     ),
   reviewProduct: (id: string, data: { rating: number; comment: string }) =>
-    axiosInstance.post(`/products/${id}/reviews`, data),
+    axiosInstance.post(`/products/${id}/review`, data),
 
   featuredProducts: () => axiosInstance.get('/products/featured'),
 };
