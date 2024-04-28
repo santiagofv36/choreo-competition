@@ -24,7 +24,7 @@ export function useCustomNavigate() {
   const navigate = useNavigate();
 
   return (path: string) => {
-    setPreviousPath(window.location.pathname);
+    setPreviousPath(window.location.pathname + (window.location.search ?? ''));
     navigate(path);
   };
 }
