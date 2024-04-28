@@ -53,6 +53,22 @@ async def get_products_pagination(
     return await prod_repo.get_products(db, page=page, perPage=perPage)
 
 
+@router.get("/featured")
+async def get_featured(
+    db: Session = Depends(get_db),
+    prod_repo: ProductRepository = Depends(ProductRepository),
+):
+    return await prod_repo.get_featured_products(db)
+
+
+@router.get("/popular")
+async def get_popular_products(
+    db: Session = Depends(get_db),
+    prod_repo: ProductRepository = Depends(ProductRepository),
+):
+    return await prod_repo.get_popular_products(db)
+
+
 @router.get("/{id}")
 async def get_product(
     id: UUID,
@@ -60,6 +76,8 @@ async def get_product(
     prod_repo: ProductRepository = Depends(ProductRepository),
 ):
     product = await prod_repo.get_product(db, id=id)
+
+    # print(product)
 
     if not product:
         raise HTTPException(

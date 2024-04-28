@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 import Input from '@/components/inputs/Input';
 import Button from '@/components/inputs/Button';
 import { registerUser } from '@/app/api/authSlice';
+import { useCustomNavigate } from '@/hooks/use-previouspath';
 
 export default function SignupForm() {
   const [form, setForm] = React.useState({
@@ -22,7 +23,7 @@ export default function SignupForm() {
 
   const isLoading = useSelector((state: any) => state.auth.loading);
 
-  const navigate = useNavigate();
+  const navigate = useCustomNavigate();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

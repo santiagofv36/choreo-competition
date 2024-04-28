@@ -5,7 +5,7 @@ import Button from '@/components/inputs/Button';
 import { Link } from 'react-router-dom';
 import ProductsList from '@/components/products/ProductsList';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProducts } from '@/app/api/productSlice';
+import { featuredProducts, fetchProducts } from '@/app/api/productSlice';
 
 const FAQ = [
   {
@@ -32,16 +32,24 @@ const HomePage = () => {
   const dispatch = useDispatch();
 
   React.useEffect(() => {
+    dispatch(featuredProducts() as any);
     dispatch(
       fetchProducts({
         page: 1,
-        perPage: 4,
+        perPage: 8,
       }) as any
     );
   }, [dispatch]);
 
-  const PRODUCTS = useSelector((state: any) => state.products.products.content);
-  const isLoading = useSelector((state: any) => state.products.loadingProducts);
+  const featured = useSelector((state: any) => state.products.featuredProducts);
+  const isLoadingFeatured = useSelector(
+    (state: any) => state.products.loadingFeatured
+  );
+
+  const popular = useSelector((state: any) => state.products.products.content);
+  const isLoadingPopular = useSelector(
+    (state: any) => state.products.loadingProducts
+  );
 
   const [search, setSearch] = React.useState('');
 
@@ -68,8 +76,8 @@ const HomePage = () => {
       </section>
       {/* Featured products */}
       <ProductsList
-        isLoading={isLoading}
-        products={PRODUCTS}
+        isLoading={isLoadingFeatured}
+        products={featured}
         title="Featured Products"
         section={{ className: 'bg-bg-neutral' }}
         rightComponent={
@@ -143,8 +151,8 @@ const HomePage = () => {
       </section>
       {/* Popular products */}
       <ProductsList
-        isLoading={isLoading}
-        products={PRODUCTS}
+        isLoading={isLoadingPopular}
+        products={popular}
         title="Most Popular Products"
         subtitle="This are our most purchased products overtime"
         section={{ className: 'bg-bg-neutral' }}

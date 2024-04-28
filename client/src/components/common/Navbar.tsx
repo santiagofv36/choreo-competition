@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { Menu } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 import nProgress from 'nprogress';
@@ -9,6 +9,7 @@ import Logo from '@/components/icons/logoIcon';
 import UserIcon from '@/components/icons/UserIcon';
 import CartIcon from '@/components/icons/cartIcon';
 import { logoutUser } from '@/app/api/authSlice';
+import { useCustomNavigate } from '@/hooks/use-previouspath';
 
 const ROUTES = [
   {
@@ -34,7 +35,7 @@ export default function Navbar() {
 
   const user = useSelector((state: any) => state.auth.user);
 
-  const navigate = useNavigate();
+  const navigate = useCustomNavigate();
 
   const dispatch = useDispatch();
 

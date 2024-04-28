@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 import nProgress from 'nprogress';
 import { loginUser } from '@/app/api/authSlice';
 import Input from '@/components/inputs/Input';
 import Button from '@/components/inputs/Button';
+import { useCustomNavigate, usePreviousPath } from '@/hooks/use-previouspath';
 
 export default function LoginForm() {
   const [form, setForm] = React.useState({
@@ -20,7 +20,9 @@ export default function LoginForm() {
 
   const isLoading = useSelector((state: any) => state.auth.loading);
 
-  const navigate = useNavigate();
+  const navigate = useCustomNavigate();
+
+  const { previousPath } = usePreviousPath();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -39,7 +41,7 @@ export default function LoginForm() {
       return;
     }
 
-    navigate('/');
+    navigate(previousPath || '/');
 
     toast.success('Logged in successfully');
     setForm({ username: '', password: '', err: false });
@@ -53,6 +55,10 @@ export default function LoginForm() {
   React.useEffect(() => {
     setForm((prev) => ({ ...prev, err: false }));
   }, [form.username, form.password]);
+
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <form className="flex flex-col p-8 w-full lg:px-20" onSubmit={onSubmit}>

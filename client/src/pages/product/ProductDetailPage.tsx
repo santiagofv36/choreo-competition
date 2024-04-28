@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router';
+import { useLocation, useParams } from 'react-router';
 import { Heart, Minus, Plus, Star, StarHalf } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import Layout from '@/components/layouts/Layout';
@@ -13,9 +13,14 @@ import ReviewCard from '@/components/cards/ReviewCard';
 import ReviewForm from '@/components/forms/ReviewForm';
 import { Pagination as PaginationFooter } from '@/components/common/Pagination';
 // import ProductsList from '@/components/products/ProductsList';
-import { getProductById, getReviewsByProductId } from '@/app/api/productSlice';
+import {
+  getProductById,
+  getReviewsByProductId,
+  resetReviewPagination,
+} from '@/app/api/productSlice';
 import { Pagination, Review } from '@/app/api/models';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useCustomNavigate } from '@/hooks/use-previouspath';
 
 interface Product {
   id: string;
@@ -42,7 +47,7 @@ export default function ProductDetailPage() {
 
   const location = useLocation();
 
-  const navigate = useNavigate();
+  const navigate = useCustomNavigate();
 
   const searchParams = new URLSearchParams(location.search);
 
@@ -57,8 +62,6 @@ export default function ProductDetailPage() {
   const isLoadingReviews = useSelector(
     (state: any) => state.products.loadingReviews
   );
-
-  // const isLoadingReviews = true;
 
   const [pagination, setPagination] = React.useState<Pagination<Review>>(() => {
     if (product) {
@@ -79,6 +82,18 @@ export default function ProductDetailPage() {
     console.log(product);
   };
 
+  const getReviews = () => {
+    if (pagination && id) {
+      dispatch(
+        getReviewsByProductId({
+          id,
+          page: pagination?.page ?? 1,
+          perPage: pagination?.perPage ?? 5,
+        }) as any // Add type assertion here if necessary
+      );
+    }
+  };
+
   React.useEffect(() => {
     window.scrollTo(0, 0);
     // Check if id has changed
@@ -93,27 +108,13 @@ export default function ProductDetailPage() {
     }
 
     return () => {
-      setPagination({
-        itemCount: 0,
-        content: [],
-        page: 1,
-        hasNext: false,
-        hasPrev: false,
-        perPage: 5,
-        pageCount: 0,
-      });
+      dispatch(resetReviewPagination() as any);
     };
   }, [dispatch]);
 
   React.useEffect(() => {
-    if (pagination && id) {
-      dispatch(
-        getReviewsByProductId({
-          id,
-          page: pagination?.page ?? 1,
-          perPage: pagination?.perPage ?? 5,
-        }) as any // Add type assertion here if necessary
-      );
+    if (product) {
+      getReviews();
     }
   }, [pagination, dispatch, id]);
 
@@ -241,11 +242,11 @@ export default function ProductDetailPage() {
                     )}
                 </div>
                 <span className="text-primary/70">
-                  {product?.numRatings === undefined
-                    ? 'No reviews'
-                    : product?.numRatings > 1
-                    ? `${product?.numRatings} reviews`
-                    : `${product?.numRatings} review`}
+                  {product?.reviews?.itemCount === undefined
+                    ? '(No reviews)'
+                    : product?.reviews?.itemCount > 1
+                    ? `(${product?.reviews?.itemCount} reviews)`
+                    : `(${product?.reviews?.itemCount} review)`}
                 </span>
               </div>
             </div>
@@ -303,14 +304,14 @@ export default function ProductDetailPage() {
             {/* Shipping */}
             <div className="flex flex-col gap-4">
               <div className="flex gap-4 justify-start items-center">
-                <TruckIcon className="size-8 text-secondary-100" />
-                <span className="text-secondary-100">
+                <TruckIcon className="size-8 text-secondary" />
+                <span className="text-secondary">
                   Free shipping on orders over $50
                 </span>
               </div>
               <div className="flex gap-4 justify-start items-center">
-                <PackageIcon className="size-8 text-secondary-100" />
-                <span className="text-secondary-100">
+                <PackageIcon className="size-8 text-secondary" />
+                <span className="text-secondary">
                   Delivers in: 3-7 Working Days Shipping & Return
                 </span>
               </div>
@@ -351,7 +352,10 @@ export default function ProductDetailPage() {
               ) : isLoadingReviews ? (
                 <div className="flex flex-col gap-6 w-full">
                   {Array.from({ length: 5 }, (_, idx) => (
-                    <div key={idx} className="flex  w-full items-center space-x-4 p-5">
+                    <div
+                      key={idx}
+                      className="flex  w-full items-center space-x-4 p-5"
+                    >
                       <Skeleton className="h-12 w-12 rounded-full" />
                       <div className="space-y-2 w-3/4">
                         <Skeleton className="h-6 w-11/12" />
@@ -374,7 +378,7 @@ export default function ProductDetailPage() {
                 </>
               )}
             </div>
-            <ReviewForm />
+            <ReviewForm id={product?.id} />
           </div>
         )}
       </section>

@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router';
+import { useLocation } from 'react-router';
 import { useSelector } from 'react-redux';
 import Layout from '@/components/layouts/Layout';
 import AuthLayout from '@/components/layouts/AuthLayout';
 import LoginForm from '@/components/forms/LoginForm';
 import SignupForm from '@/components/forms/SignupForm';
+import { useCustomNavigate } from '@/hooks/use-previouspath';
 
 export default function AuthPage() {
   const location = useLocation();
@@ -15,7 +16,7 @@ export default function AuthPage() {
     [location?.search]
   );
 
-  const navigate = useNavigate();
+  const navigate = useCustomNavigate();
 
   const user = useSelector((state: any) => state.auth.user);
 

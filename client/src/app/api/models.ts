@@ -32,16 +32,20 @@ export interface Product {
     id: string;
   }>;
   reviews: Pagination<Review>;
+  rating: number;
 }
 
 export interface ProductSlice {
+  featuredProducts: Product[];
   products: Product[];
   product: Product | null;
   loadingProducts: boolean;
   loadingProduct: boolean;
   loadingReviews: boolean;
-  error: string;
+  loadingFeatured: boolean;
+  error: object | null;
   lastFetchedProducts: number;
+  lastFetchedFeatured: number;
 }
 
 export type Pagination<T> = Partial<{
