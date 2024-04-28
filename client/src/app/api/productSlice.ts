@@ -289,10 +289,21 @@ const productSlice = createSlice({
       };
     });
     builder.addCase(reviewProduct.fulfilled, (state, action) => {
-      if (!state.product) {
+      const p = state.product;
+
+      if (!p) {
         return;
       }
-      state.product.reviews.content!.push(action.payload as Review);
+      p.reviews.itemCount! += 1;
+      p.reviews.pageCount = Math.ceil(
+        p.reviews.itemCount! / p.reviews.perPage!
+      );
+      p.reviews.hasNext =
+        p.reviews.page! * p.reviews.perPage! < p.reviews.itemCount!;
+      p.reviews.hasPrev = p.reviews.page! > 1;
+      if ((p?.reviews?.content?.length ?? 50) < p.reviews.perPage!) {
+        p.reviews.content!.push(action.payload as Review);
+      }
     });
     builder.addCase(reviewProduct.rejected, (state, action) => {
       state.error! = action.payload as object;
