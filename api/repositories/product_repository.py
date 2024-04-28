@@ -1,3 +1,4 @@
+from repositories.auth_repository import AuthRepository
 from schemas.schemas import UserBase
 from dependencies import get_db
 from models.models import Product, Category, ProductImage, Review, User
@@ -97,10 +98,21 @@ class ProductRepository:
                 user_id=current_user.user_id,
             )
 
+            current_user = (
+                db.query(User).filter(User.user_id == current_user.user_id).first()
+            )
+
             db.add(create_review)
             db.commit()
             db.refresh(create_review)
-            return create_review
+            return {
+                "id": create_review.id,
+                "product_id": create_review.product_id,
+                "rating": create_review.rating,
+                "review_String": create_review.review_String,
+                "created_at": create_review.created_at,
+                "user": {"name": current_user.name, "username": current_user.username},
+            }
 
         except HTTPException as error:
             print(error)

@@ -108,6 +108,10 @@ export default function ProductDetailPage() {
     }
 
     return () => {
+      setPagination({
+        ...pagination,
+        page: 1,
+      });
       dispatch(resetReviewPagination() as any);
     };
   }, [dispatch]);

@@ -20,7 +20,7 @@ const initialState: ProductSlice = {
 };
 
 // Create a time threshold for caching (e.g., 5 minutes)
-const CACHE_TIME_THRESHOLD = 5 * 60 * 1000; // 5 minutes in milliseconds
+const CACHE_TIME_THRESHOLD = 25 * 60 * 1000; // 5 minutes in milliseconds
 
 export const fetchProducts = createAsyncThunk(
   'products',
@@ -289,10 +289,21 @@ const productSlice = createSlice({
       };
     });
     builder.addCase(reviewProduct.fulfilled, (state, action) => {
-      if (!state.product) {
+      const p = state.product;
+
+      if (!p) {
         return;
       }
-      state.product.reviews.content!.unshift(action.payload as Review);
+      p.reviews.itemCount! += 1;
+      p.reviews.pageCount = Math.ceil(
+        p.reviews.itemCount! / p.reviews.perPage!
+      );
+      p.reviews.hasNext =
+        p.reviews.page! * p.reviews.perPage! < p.reviews.itemCount!;
+      p.reviews.hasPrev = p.reviews.page! > 1;
+      if ((p?.reviews?.content?.length ?? 50) < p.reviews.perPage!) {
+        p.reviews.content!.push(action.payload as Review);
+      }
     });
     builder.addCase(reviewProduct.rejected, (state, action) => {
       state.error! = action.payload as object;

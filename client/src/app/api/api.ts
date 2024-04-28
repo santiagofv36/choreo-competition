@@ -6,20 +6,26 @@ const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL || apiUrl,
 });
 
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const cookies = document.cookie.split(';').map((cookie) => cookie.trim());
+// axiosInstance.interceptors.request.use(
+//   (config) => {
+//     const cookies = document.cookie.split(';').map((cookie) => cookie.trim());
 
-    const token = cookies.find((cookie) => cookie.startsWith('access_token='));
+//     const token = cookies.find((cookie) => cookie.startsWith('access_token='));
 
-    if (token) {
-      config.headers.Authorization = `Bearer ${token.split('=')[1]}`;
-    }
+//     if (token) {
+//       config.headers.Authorization = `Bearer ${token.split('=')[1]}`;
+//     }
 
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+//     return config;
+//   },
+//   (error) => Promise.reject(error)
+// );
+
+const extract_cookie = () => {
+  const cookies = document.cookie.split(';').map((cookie) => cookie.trim());
+  const token = cookies.find((cookie) => cookie.startsWith('access_token='));
+  return token ? token.split('=')[1] : '';
+};
 
 const api = {
   login: (data: { username: string; password: string }) => {
@@ -43,7 +49,12 @@ const api = {
     name: string;
   }) => axiosInstance.post('/auth/sign-up', data),
   getCurrentUser: () => axiosInstance.get('/auth'),
-  logout: () => axiosInstance.delete('/auth/logout'),
+  logout: () =>
+    axiosInstance.delete('/auth/logout', {
+      headers: {
+        Authorization: `Bearer ${extract_cookie()}`,
+      },
+    }),
   productsPagination: (page: number = 1, perPage: number = 10) => {
     return axiosInstance.get(`/products?page=${page}&perPage=${perPage}`);
   },
@@ -53,7 +64,11 @@ const api = {
       `/products/${id}/reviews?page=${page}&perPage=${perPage}`
     ),
   reviewProduct: (id: string, data: { rating: number; comment: string }) =>
-    axiosInstance.post(`/products/${id}/review`, data),
+    axiosInstance.post(`/products/${id}/review`, data, {
+      headers: {
+        Authorization: `Bearer ${extract_cookie()}`,
+      },
+    }),
 
   featuredProducts: () => axiosInstance.get('/products/featured'),
 };
