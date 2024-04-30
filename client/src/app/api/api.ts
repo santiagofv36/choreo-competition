@@ -69,6 +69,8 @@ const api = {
     }),
 
   featuredProducts: () => axiosInstance.get('/products/featured'),
+
+  popularProducts: () => axiosInstance.get('/products/popular'),
 };
 
 export default api;

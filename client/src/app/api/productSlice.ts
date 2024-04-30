@@ -9,14 +9,17 @@ import { Pagination, Product, ProductSlice, Review } from '@/app/api/models';
 const initialState: ProductSlice = {
   featuredProducts: [],
   products: [],
+  popular: [],
   product: null,
   loadingProducts: false,
   loadingProduct: false,
   loadingReviews: false,
   loadingFeatured: false,
+  loadingPopular: false,
   error: null,
   lastFetchedProducts: 0, // Timestamp indicating when products were last fetched
   lastFetchedFeatured: 0,
+  lastFetchedPopular: 0,
 };
 
 // Create a time threshold for caching (e.g., 5 minutes)
@@ -162,14 +165,6 @@ export const resetReviewPagination = createAsyncThunk(
 
     const { product } = state.products;
 
-    // if (!product?.reviews) {
-    //   return;
-    // }
-
-    // if (product.reviews.page === 1) {
-    //   return;
-    // }
-
     try {
       const response = await api.reviewsByProductId(
         product.id,
@@ -179,6 +174,24 @@ export const resetReviewPagination = createAsyncThunk(
       return response.data;
     } catch (error: any) {
       return Promise.reject(error.response.data);
+    }
+  }
+);
+
+export const fetchPopularProducts = createAsyncThunk(
+  'popular',
+  async (_, { getState }) => {
+    const state = getState() as RootState;
+
+    if (Date.now() - state.products.lastFetchedPopular < CACHE_TIME_THRESHOLD) {
+      return state.products.popular;
+    }
+
+    try {
+      const response = await api.popularProducts();
+      return response.data;
+    } catch (error) {
+      return Promise.reject();
     }
   }
 );
@@ -196,6 +209,8 @@ const onLoad = (
     state.loadingReviews = true;
   } else if (loadingVariable === 'loadingFeatured') {
     state.loadingFeatured = true;
+  } else if (loadingVariable === 'loadingPopular') {
+    state.loadingPopular = true;
   }
 };
 
@@ -212,6 +227,8 @@ const onFail = (
     state.loadingReviews = false;
   } else if (loadingVariable === 'loadingFeatured') {
     state.loadingFeatured = false;
+  } else if (loadingVariable === 'loadingPopular') {
+    state.loadingPopular = false;
   }
   state.error = error;
   nProgress.done();
@@ -239,6 +256,10 @@ const onSuccess = <T>(
     state.loadingFeatured = false;
     state.featuredProducts = data as Product[];
     state.lastFetchedFeatured = Date.now();
+  } else if (loadingVariable === 'loadingPopular') {
+    state.loadingPopular = false;
+    state.popular = data as Product[];
+    state.lastFetchedPopular = Date.now();
   }
   state.error = null;
   nProgress.done();
@@ -308,6 +329,15 @@ const productSlice = createSlice({
     builder.addCase(reviewProduct.rejected, (state, action) => {
       state.error! = action.payload as object;
     });
+    builder.addCase(fetchPopularProducts.pending, (state) =>
+      onLoad(state, 'loadingPopular')
+    );
+    builder.addCase(fetchPopularProducts.fulfilled, (state, action) =>
+      onSuccess(state, action.payload, 'loadingPopular')
+    );
+    builder.addCase(fetchPopularProducts.rejected, (state, action) =>
+      onFail(state, action.payload as object, 'loadingPopular')
+    );
   },
 });
 

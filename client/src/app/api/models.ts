@@ -38,14 +38,17 @@ export interface Product {
 export interface ProductSlice {
   featuredProducts: Product[];
   products: Product[];
+  popular: Product[];
   product: Product | null;
   loadingProducts: boolean;
   loadingProduct: boolean;
   loadingReviews: boolean;
   loadingFeatured: boolean;
+  loadingPopular: boolean;
   error: object | null;
   lastFetchedProducts: number;
   lastFetchedFeatured: number;
+  lastFetchedPopular: number;
 }
 
 export type Pagination<T> = Partial<{
