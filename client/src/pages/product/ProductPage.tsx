@@ -11,8 +11,41 @@ import { Product } from '@/app/api/models';
 import DebouncedInput from '@/components/inputs/DebouncedInput';
 import ProductsList from '@/components/products/ProductsList';
 
+const usePriceRange = (priceFilter: string) => {
+  const PRICE_RANGES = [
+    {
+      id: 'e02cfdf1-409f-4ab7-9239-b04d5cf6fd63',
+      name: '$1-50',
+    },
+    {
+      id: '955a8ca5-477e-4846-8b33-b076d53008f0',
+      name: '$50-100',
+    },
+    {
+      id: '9d7d6944-b50e-47dc-b525-271484552eae',
+      name: '$100-150',
+    },
+    {
+      id: '272bb69f-96f1-467d-9f47-3e60d0e0b162',
+      name: 'Over $150',
+    },
+  ];
+  const priceRange = PRICE_RANGES.find((range) => range.id === priceFilter);
+  const min = parseInt(
+    priceRange?.name.replace('$', '').split('-')[0] ?? '0',
+    10
+  );
+  const max = parseInt(
+    (priceRange && priceRange?.name.replace('$', '').split('-')[1]) ?? '0',
+    10
+  );
+
+  return { min, max, PRICE_RANGES };
+};
+
 export default function ProductPage() {
-  const [search, setSearch] = React.useState('');
+  const searchParams = new URLSearchParams(location.search);
+  const [search, setSearch] = React.useState(searchParams.get('q') ?? '');
 
   const products = useSelector((state: any) => state.products.products);
 
@@ -21,44 +54,58 @@ export default function ProductPage() {
   );
 
   const categories = useSelector((state: any) => state.products.categories);
+  const [priceFilter, setPriceFilter] = React.useState<string>(
+    searchParams.get('range') ?? ''
+  );
+  const { min, max, PRICE_RANGES } = usePriceRange(priceFilter);
 
-  const [category, setCategory] = React.useState('');
-  const [minPrice] = React.useState(0);
-  const [maxPrice] = React.useState(0);
-
-  const [priceFilter, setPriceFilter] = React.useState<string>('');
-
-  const PRICE_RANGES = [
-    {
-      id: '1',
-      name: '$1-50',
-    },
-    {
-      id: '2',
-      name: '$50-100',
-    },
-    {
-      id: '3',
-      name: '$100-150',
-    },
-    {
-      id: '4',
-      name: 'Over $150',
-    },
-  ];
+  const [category, setCategory] = React.useState(searchParams.get('cat') ?? '');
 
   const dispatch = useDispatch();
 
+  const setSearchParams = () => {
+    if (search) {
+      searchParams.set('q', search);
+    }
+    if (category) {
+      searchParams.set('cat', category);
+    }
+    if (min) {
+      searchParams.set('range', priceFilter);
+    }
+  };
+
+  const clearSearchParams = () => {
+    if (!search) {
+      searchParams.delete('q');
+      history.pushState(
+        {},
+        '',
+        `${location.pathname}?${searchParams.toString()}`
+      );
+    }
+    if (!category) {
+      searchParams.delete('cat');
+      history.pushState(
+        {},
+        '',
+        `${location.pathname}?${searchParams.toString()}`
+      );
+    }
+    if (!min) {
+      searchParams.delete('range');
+      history.pushState(
+        {},
+        '',
+        `${location.pathname}?${searchParams.toString()}`
+      );
+    }
+    if (searchParams.size === 0) {
+      history.pushState({}, '', `${location.pathname}`);
+    }
+  };
+
   React.useEffect(() => {
-    const priceRange = PRICE_RANGES.find((range) => range.id === priceFilter);
-    const min = parseInt(
-      priceRange?.name.replace('$', '').split('-')[0] ?? '0',
-      10
-    );
-    const max = parseInt(
-      (priceRange && priceRange?.name.replace('$', '').split('-')[1]) ?? '0',
-      10
-    );
     dispatch(
       fetchProducts({
         page: 1,
@@ -69,7 +116,20 @@ export default function ProductPage() {
         maxPrice: max,
       }) as any
     );
-  }, [dispatch, category, maxPrice, minPrice, search, priceFilter]);
+
+    // change the url query params
+    setSearchParams();
+
+    if (searchParams.size > 0) {
+      history.pushState(
+        {},
+        '',
+        `${location.pathname}?${searchParams.toString()}`
+      );
+    }
+
+    clearSearchParams();
+  }, [dispatch, category, search, priceFilter]);
 
   React.useEffect(() => {
     dispatch(fetchCategories() as any);
@@ -120,14 +180,14 @@ export default function ProductPage() {
             </>
           )}
         </span>
-          <ProductsList
-            products={products?.content as Product[]}
-            title=""
-            isLoading={loadingProducts}
-            loadingQuantity={12}
-            section={{ className: 'lg:px-0 -mt-14 gap-8' }}
-            grid={{ className: 'gap-8' }}
-          />
+        <ProductsList
+          products={products?.content as Product[]}
+          title=""
+          isLoading={loadingProducts}
+          loadingQuantity={12}
+          section={{ className: 'lg:px-0 -mt-14 gap-8' }}
+          grid={{ className: 'gap-8' }}
+        />
         <div className="flex flex-col justify-center items-center gap-8">
           {products?.content?.length !== 0 && (
             <span className="font-light text-md flex gap-3 flex-col">
