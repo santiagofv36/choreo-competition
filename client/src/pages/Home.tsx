@@ -132,8 +132,8 @@ const HomePage = () => {
             <Link
               to={`/products?cat=${
                 categories?.filter(
-                  (category: Category) => category.name === 'Electronics'
-                )[0].id
+                  (category: Category) => category?.name === 'Electronics'
+                )[0]?.id
               }`}
             >
               <div className="size-full relative">
@@ -153,8 +153,8 @@ const HomePage = () => {
                 <Link
                   to={`/products?cat=${
                     categories?.filter(
-                      (category: Category) => category.name === 'Jewelry'
-                    )[0].id
+                      (category: Category) => category?.name === 'Jewelry'
+                    )[0]?.id
                   }`}
                   className="w-full"
                 >
@@ -174,8 +174,8 @@ const HomePage = () => {
                 <Link
                   to={`/products?cat=${
                     categories?.filter(
-                      (category: Category) => category.name === 'Clothing'
-                    )[0].id
+                      (category: Category) => category?.name === 'Clothing'
+                    )[0]?.id
                   }`}
                   className="w-full"
                 >
@@ -196,8 +196,8 @@ const HomePage = () => {
             <Link
               to={`/products?cat=${
                 categories?.filter(
-                  (category: Category) => category.name === 'Books'
-                )[0].id
+                  (category: Category) => category?.name === 'Books'
+                )[0]?.id
               }`}
             >
               <div className="size-full relative">

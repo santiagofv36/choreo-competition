@@ -34,19 +34,20 @@ export default function FilterCard<T>({
         <span className="font-bold text-xl">|</span> {title}
       </h1>
       <ul className="flex flex-col gap-2">
-        {options.map((_option, idx) => (
-          <div className="flex gap-8" key={idx}>
-            <input
-              type="checkbox"
-              checked={_option.id === option}
-              value={_option.id}
-              onChange={handleSetOption}
-            />
-            <li key={_option.id} className="text-sm font-thin">
-              {_option.name}
-            </li>
-          </div>
-        ))}
+        {options &&
+          options?.map((_option, idx) => (
+            <div className="flex gap-8" key={idx}>
+              <input
+                type="checkbox"
+                checked={_option.id === option}
+                value={_option.id}
+                onChange={handleSetOption}
+              />
+              <li key={_option.id} className="text-sm font-thin">
+                {_option.name}
+              </li>
+            </div>
+          ))}
       </ul>
     </div>
   );
