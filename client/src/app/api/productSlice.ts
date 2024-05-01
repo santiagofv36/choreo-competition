@@ -4,18 +4,26 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import nProgress from 'nprogress';
 import api from '@/app/api/api';
 import { RootState } from '@/app/store';
-import { Pagination, Product, ProductSlice, Review } from '@/app/api/models';
+import {
+  Category,
+  Pagination,
+  Product,
+  ProductSlice,
+  Review,
+} from '@/app/api/models';
 
 const initialState: ProductSlice = {
   featuredProducts: [],
   products: [],
   popular: [],
+  categories: [],
   product: null,
   loadingProducts: false,
   loadingProduct: false,
   loadingReviews: false,
   loadingFeatured: false,
   loadingPopular: false,
+  loadingCategories: false,
   error: null,
   lastFetchedProducts: 0, // Timestamp indicating when products were last fetched
   lastFetchedFeatured: 0,
@@ -27,22 +35,25 @@ const CACHE_TIME_THRESHOLD = 25 * 60 * 1000; // 5 minutes in milliseconds
 
 export const fetchProducts = createAsyncThunk(
   'products',
-  async (pageInfo: { page: number; perPage: number }, { getState }) => {
-    const state = getState() as RootState;
-
-    // Check if products were fetched within the caching time threshold
-    if (
-      Date.now() - state.products.lastFetchedProducts <
-      CACHE_TIME_THRESHOLD
-    ) {
-      // Return cached products if within threshold
-      return state.products.products;
+  async (
+    pageInfo: {
+      page: number;
+      perPage: number;
+      search: string;
+      category_id: string;
+      minPrice: number;
+      maxPrice: number;
     }
+  ) => {
 
     try {
       const response = await api.productsPagination(
         pageInfo.page,
-        pageInfo.perPage
+        pageInfo.perPage,
+        pageInfo.search,
+        pageInfo.category_id,
+        pageInfo.minPrice,
+        pageInfo.maxPrice
       );
       return response.data;
     } catch (error: any) {
@@ -196,6 +207,27 @@ export const fetchPopularProducts = createAsyncThunk(
   }
 );
 
+export const fetchCategories = createAsyncThunk(
+  'categories',
+  async (_, { getState }) => {
+    const state = getState() as RootState;
+
+    if (
+      state.products.categories.length &&
+      Date.now() - state.products.lastFetchedProducts < CACHE_TIME_THRESHOLD
+    ) {
+      return state.products.categories;
+    }
+
+    try {
+      const response = await api.categories();
+      return response.data;
+    } catch (error) {
+      return Promise.reject();
+    }
+  }
+);
+
 const onLoad = (
   state: ProductSlice,
   loadingVariable: string = 'loadingProducts'
@@ -211,6 +243,8 @@ const onLoad = (
     state.loadingFeatured = true;
   } else if (loadingVariable === 'loadingPopular') {
     state.loadingPopular = true;
+  } else if (loadingVariable === 'loadingCategories') {
+    state.loadingCategories = true;
   }
 };
 
@@ -229,6 +263,8 @@ const onFail = (
     state.loadingFeatured = false;
   } else if (loadingVariable === 'loadingPopular') {
     state.loadingPopular = false;
+  } else if (loadingVariable === 'loadingCategories') {
+    state.loadingCategories = false;
   }
   state.error = error;
   nProgress.done();
@@ -260,6 +296,9 @@ const onSuccess = <T>(
     state.loadingPopular = false;
     state.popular = data as Product[];
     state.lastFetchedPopular = Date.now();
+  } else if (loadingVariable === 'loadingCategories') {
+    state.loadingCategories = false;
+    state.categories = data as Category[];
   }
   state.error = null;
   nProgress.done();
@@ -337,6 +376,15 @@ const productSlice = createSlice({
     );
     builder.addCase(fetchPopularProducts.rejected, (state, action) =>
       onFail(state, action.payload as object, 'loadingPopular')
+    );
+    builder.addCase(fetchCategories.pending, (state) =>
+      onLoad(state, 'loadingCategories')
+    );
+    builder.addCase(fetchCategories.fulfilled, (state, action) =>
+      onSuccess(state, action.payload, 'loadingCategories')
+    );
+    builder.addCase(fetchCategories.rejected, (state, action) =>
+      onFail(state, action.payload as object, 'loadingCategories')
     );
   },
 });
