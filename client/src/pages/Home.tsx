@@ -75,6 +75,7 @@ const HomePage = () => {
         products={featured}
         title="Featured Products"
         section={{ className: 'bg-bg-neutral' }}
+        grid={{ className: 'gap-x-20' }}
         rightComponent={
           <span className="text-wrap  w-48 md:w-72">
             For only this week this products have incredible discounts you can't
@@ -151,6 +152,7 @@ const HomePage = () => {
         title="Most Popular Products"
         subtitle="This are our most purchased products overtime"
         section={{ className: 'bg-bg-neutral' }}
+        grid={{ className: 'gap-x-20' }}
         rightComponent={
           <Link to="/products">
             <Button

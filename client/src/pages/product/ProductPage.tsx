@@ -184,7 +184,7 @@ export default function ProductPage() {
           title=""
           isLoading={loadingProducts}
           loadingQuantity={12}
-          section={{ className: 'lg:px-0 -mt-14 gap-8' }}
+          section={{ className: 'xl:px-0 -mt-14 gap-8' }}
           grid={{ className: 'gap-8' }}
         />
         <div className="flex flex-col justify-center items-center gap-8">
