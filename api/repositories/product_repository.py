@@ -79,10 +79,14 @@ class ProductRepository:
                 query = query.filter(Product.category_id == category_id)
 
             # Apply price range filter
-            if min_price is not None:
-                query = query.filter(Product.price >= min_price)
-            if max_price is not None:
-                query = query.filter(Product.price <= max_price)
+            if min_price is not None or max_price is not None:
+                discounted_price = func.coalesce(
+                    Product.price * (1 - Product.discount_percentage), 0
+                )
+                if min_price is not None:
+                    query = query.filter(discounted_price >= min_price)
+                if max_price is not None:
+                    query = query.filter(discounted_price <= max_price)
 
             response = PaginatedResponse(query=query, pagesize=perPage)
             return response.get_paginated_results(page=page)
