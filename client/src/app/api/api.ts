@@ -53,8 +53,21 @@ const api = {
         Authorization: `Bearer ${extract_cookie()}`,
       },
     }),
-  productsPagination: (page: number = 1, perPage: number = 10) => {
-    return axiosInstance.get(`/products?page=${page}&perPage=${perPage}`);
+  productsPagination: (
+    page: number = 1,
+    perPage: number = 10,
+    search: string = '',
+    category_id: string = '',
+    minPrice: number = 0,
+    maxPrice: number = 0
+  ) => {
+    return axiosInstance.get(
+      `/products?${search ? `search=${search}&` : ''}${
+        category_id ? `category_id=${category_id}&` : ''
+      }${minPrice ? `min_price=${minPrice}&` : ''}${
+        maxPrice ? `max_price=${maxPrice}&` : ''
+      }page=${page}&perPage=${perPage}`
+    );
   },
   productById: (id: string) => axiosInstance.get(`/products/${id}`),
   reviewsByProductId: (id: string, page: number = 1, perPage: number = 5) =>
@@ -71,6 +84,8 @@ const api = {
   featuredProducts: () => axiosInstance.get('/products/featured'),
 
   popularProducts: () => axiosInstance.get('/products/popular'),
+
+  categories: () => axiosInstance.get('/categories'),
 };
 
 export default api;
