@@ -5,7 +5,13 @@ import Button from '@/components/inputs/Button';
 import { Link } from 'react-router-dom';
 import ProductsList from '@/components/products/ProductsList';
 import { useDispatch, useSelector } from 'react-redux';
-import { featuredProducts, fetchPopularProducts } from '@/app/api/productSlice';
+import {
+  featuredProducts,
+  fetchCategories,
+  fetchPopularProducts,
+} from '@/app/api/productSlice';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Category } from '@/app/api/models';
 
 const FAQ = [
   {
@@ -34,6 +40,7 @@ const HomePage = () => {
   React.useEffect(() => {
     dispatch(featuredProducts() as any);
     dispatch(fetchPopularProducts() as any);
+    dispatch(fetchCategories() as any);
   }, [dispatch]);
 
   const featured = useSelector((state: any) => state.products.featuredProducts);
@@ -44,6 +51,11 @@ const HomePage = () => {
   const popular = useSelector((state: any) => state.products.popular);
   const isLoadingPopular = useSelector(
     (state: any) => state.products.loadingPopular
+  );
+
+  const categories = useSelector((state: any) => state.products.categories);
+  const isLoadingCategories = useSelector(
+    (state: any) => state.products.loadingCategories
   );
 
   const [search, setSearch] = React.useState('');
@@ -94,56 +106,114 @@ const HomePage = () => {
             products
           </span>
         </div>
-        <div className="grid lg:grid-cols-3 gap-8 w-full">
-          <div className="size-full relative">
-            <img
-              src="electronic.webp"
-              alt="Category"
-              className="size-full rounded-xl h-96"
-            />
-            <p className="absolute bottom-2 px-4 text-white z-10 text-xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
-              Electronics
-            </p>
-            <div className="absolute bottom-0 left-0 w-full rounded-xl h-16 bg-gradient-to-t from-gray-300 to-transparent" />
-          </div>
-          <div className="size-full">
-            <div className="flex flex-col items-center justify-center w-full gap-8">
-              <div className="w-full relative">
-                <img
-                  src="jewlry.webp"
-                  alt="Category"
-                  className="w-full rounded-xl lg:h-44 h-96 object-cover"
-                />
-                <p className="absolute bottom-2 px-4 text-white z-10 text-xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
-                  Jewelry
-                </p>
-                <div className="absolute bottom-0 left-0 w-full rounded-xl h-16 bg-gradient-to-t from-gray-300 to-transparent" />
+        {isLoadingCategories ? (
+          <div className="grid lg:grid-cols-3 gap-8 w-full">
+            <div className="size-full relative">
+              <Skeleton className="w-full h-96 rounded-xl" />
+            </div>
+            <div className="size-full">
+              <div className="flex flex-col items-center justify-center w-full gap-8">
+                <div className="w-full relative">
+                  <Skeleton className="w-full rounded-xl lg:h-44 h-96 object-cover" />
+                </div>
+                <div className="w-full relative">
+                  <Skeleton className="w-full rounded-xl lg:h-44 h-96 object-cover" />
+                </div>
               </div>
-              <div className="w-full relative">
-                <img
-                  src="clothing.webp"
-                  alt="Category"
-                  className="w-full rounded-xl lg:h-44 h-96 object-cover"
-                />
-                <p className="absolute bottom-2 px-4 text-white z-10 text-xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
-                  Clothing
-                </p>
-                <div className="absolute bottom-0 left-0 w-full rounded-xl h-16 bg-gradient-to-t from-gray-300 to-transparent" />
+            </div>
+            <div className="size-full relative">
+              <div className="size-full relative">
+                <Skeleton className="w-full h-96 rounded-xl" />
               </div>
             </div>
           </div>
-          <div className="size-full relative">
-            <img
-              src="bedroomfurniture.webp"
-              alt="Category"
-              className="size-full rounded-xl h-96"
-            />
-            <p className="absolute bottom-2 px-4 text-white z-10 text-xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
-              Furniture
-            </p>
-            <div className="absolute bottom-0 left-0 w-full rounded-xl h-16 bg-gradient-to-t from-gray-300 to-transparent" />
+        ) : (
+          <div className="grid lg:grid-cols-3 gap-8 w-full">
+            <Link
+              to={`/products?cat=${
+                categories?.filter(
+                  (category: Category) => category.name === 'Electronics'
+                )[0].id
+              }`}
+            >
+              <div className="size-full relative">
+                <img
+                  src="electronic.webp"
+                  alt="Category"
+                  className="size-full rounded-xl h-96"
+                />
+                <p className="absolute bottom-2 px-4 text-white z-10 text-xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
+                  Electronics
+                </p>
+                <div className="absolute bottom-0 left-0 w-full rounded-xl h-16 bg-gradient-to-t from-gray-300 to-transparent" />
+              </div>
+            </Link>
+            <div className="size-full">
+              <div className="flex flex-col items-center justify-center w-full gap-8">
+                <Link
+                  to={`/products?cat=${
+                    categories?.filter(
+                      (category: Category) => category.name === 'Jewelry'
+                    )[0].id
+                  }`}
+                  className="w-full"
+                >
+                  <div className="w-full relative">
+                    <img
+                      src="jewlry.webp"
+                      alt="Category"
+                      className="w-full rounded-xl lg:h-44 h-96 object-cover"
+                    />
+                    <p className="absolute bottom-2 px-4 text-white z-10 text-xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
+                      Jewelry
+                    </p>
+                    <div className="absolute bottom-0 left-0 w-full rounded-xl h-16 bg-gradient-to-t from-gray-300 to-transparent" />
+                  </div>
+                </Link>
+
+                <Link
+                  to={`/products?cat=${
+                    categories?.filter(
+                      (category: Category) => category.name === 'Clothing'
+                    )[0].id
+                  }`}
+                  className="w-full"
+                >
+                  <div className="w-full relative">
+                    <img
+                      src="clothing.webp"
+                      alt="Category"
+                      className="w-full rounded-xl lg:h-44 h-96 object-cover"
+                    />
+                    <p className="absolute bottom-2 px-4 text-white z-10 text-xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
+                      Clothing
+                    </p>
+                    <div className="absolute bottom-0 left-0 w-full rounded-xl h-16 bg-gradient-to-t from-gray-300 to-transparent" />
+                  </div>
+                </Link>
+              </div>
+            </div>
+            <Link
+              to={`/products?cat=${
+                categories?.filter(
+                  (category: Category) => category.name === 'Books'
+                )[0].id
+              }`}
+            >
+              <div className="size-full relative">
+                <img
+                  src="bedroomfurniture.webp"
+                  alt="Category"
+                  className="size-full rounded-xl h-96"
+                />
+                <p className="absolute bottom-2 px-4 text-white z-10 text-xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
+                  Furniture
+                </p>
+                <div className="absolute bottom-0 left-0 w-full rounded-xl h-16 bg-gradient-to-t from-gray-300 to-transparent" />
+              </div>
+            </Link>
           </div>
-        </div>
+        )}
       </section>
       {/* Popular products */}
       <ProductsList

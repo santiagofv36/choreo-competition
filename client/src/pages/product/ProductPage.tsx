@@ -132,6 +132,7 @@ export default function ProductPage() {
 
   React.useEffect(() => {
     dispatch(fetchCategories() as any);
+    window.scrollTo(0, 0);
   }, [dispatch]);
 
   return (
@@ -162,7 +163,7 @@ export default function ProductPage() {
           onChange={(value) => setSearch(value as string)}
         />
         <span className="font-bold text-md flex gap-3 flex-col">
-          {products?.content?.length === 0 ? (
+          {products?.content?.length === 0 && !loadingProducts ? (
             <div className="flex justify-center items-center">
               No results were found!
             </div>
