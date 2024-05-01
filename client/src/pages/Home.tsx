@@ -5,7 +5,7 @@ import Button from '@/components/inputs/Button';
 import { Link } from 'react-router-dom';
 import ProductsList from '@/components/products/ProductsList';
 import { useDispatch, useSelector } from 'react-redux';
-import { featuredProducts, fetchProducts } from '@/app/api/productSlice';
+import { featuredProducts, fetchPopularProducts } from '@/app/api/productSlice';
 
 const FAQ = [
   {
@@ -33,12 +33,7 @@ const HomePage = () => {
 
   React.useEffect(() => {
     dispatch(featuredProducts() as any);
-    dispatch(
-      fetchProducts({
-        page: 1,
-        perPage: 8,
-      }) as any
-    );
+    dispatch(fetchPopularProducts() as any);
   }, [dispatch]);
 
   const featured = useSelector((state: any) => state.products.featuredProducts);
@@ -46,9 +41,9 @@ const HomePage = () => {
     (state: any) => state.products.loadingFeatured
   );
 
-  const popular = useSelector((state: any) => state.products.products.content);
+  const popular = useSelector((state: any) => state.products.popular);
   const isLoadingPopular = useSelector(
-    (state: any) => state.products.loadingProducts
+    (state: any) => state.products.loadingPopular
   );
 
   const [search, setSearch] = React.useState('');

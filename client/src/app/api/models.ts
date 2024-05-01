@@ -35,17 +35,27 @@ export interface Product {
   rating: number;
 }
 
+export interface Category {
+  id: string;
+  name: string;
+}
+
 export interface ProductSlice {
   featuredProducts: Product[];
   products: Product[];
+  popular: Product[];
+  categories: Category[];
   product: Product | null;
   loadingProducts: boolean;
   loadingProduct: boolean;
   loadingReviews: boolean;
   loadingFeatured: boolean;
+  loadingPopular: boolean;
+  loadingCategories: boolean;
   error: object | null;
   lastFetchedProducts: number;
   lastFetchedFeatured: number;
+  lastFetchedPopular: number;
 }
 
 export type Pagination<T> = Partial<{
