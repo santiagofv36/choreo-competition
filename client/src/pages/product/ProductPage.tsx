@@ -1,45 +1,29 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import FilterCard from '@/components/cards/FilterCard';
 import Input from '@/components/inputs/Input';
 import ProductCard from '@/components/cards/ProductCard';
 import Button from '@/components/inputs/Button';
 import Layout from '@/components/layouts/Layout';
-
-const PRODUCTS = [
-  {
-    id: '1',
-    name: 'Product name',
-    price: 100,
-    images: [{ image: 'https://via.placeholder.com/150', id: '1' }],
-  },
-  {
-    id: '2',
-    name: 'Product name',
-    price: 100,
-    images: [{ image: 'https://via.placeholder.com/150', id: '2' }],
-  },
-  {
-    id: '3',
-    name: 'Product name',
-    price: 100,
-    images: [{ image: 'https://via.placeholder.com/150', id: '3' }],
-  },
-  {
-    id: '4',
-    name: 'Product name',
-    price: 100,
-    images: [{ image: 'https://via.placeholder.com/150', id: '4' }],
-  },
-];
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProducts } from '@/app/api/productSlice';
+import { Product } from '@/app/api/models';
 
 export default function ProductPage() {
   const [search, setSearch] = React.useState('');
 
-  const pagination = {
-    page: 1,
-    perPage: 12,
-    itemCount: 24,
-  };
+  const products = useSelector((state: any) => state.products.products);
+
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    dispatch(
+      fetchProducts({
+        page: 1,
+        perPage: 12,
+      }) as any
+    );
+  }, [dispatch]);
 
   return (
     <Layout>
@@ -62,25 +46,23 @@ export default function ProductPage() {
           onChange={(e) => setSearch(e.target.value)}
         />
         <span className="font-bold text-md flex gap-3 flex-col">
-          Showing{' '}
-          {((pagination?.page ?? 1) - 1) * (pagination?.perPage ?? 4) + 1}-
-          {pagination?.page * pagination?.perPage} of {pagination?.itemCount}{' '}
-          item{pagination?.itemCount > 1 && 's'}
+          Showing {((products?.page ?? 1) - 1) * (products?.perPage ?? 4) + 1}-
+          {products?.page * products?.perPage} of {products?.itemCount} item
+          {products?.itemCount > 1 && 's'}
           <span className="font-light">
             This are the results based on {search}
           </span>
         </span>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {PRODUCTS.map((product, idx) => (
+          {products.content.map((product: Product, idx: number) => (
             <ProductCard key={idx} product={product} />
           ))}
         </div>
         <div className="flex flex-col justify-center items-center gap-8">
           <span className="font-light text-md flex gap-3 flex-col">
-            Showing{' '}
-            {((pagination?.page ?? 1) - 1) * (pagination?.perPage ?? 4) + 1}-
-            {pagination?.page * pagination?.perPage} of {pagination?.itemCount}{' '}
-            item{pagination?.itemCount > 1 && 's'}
+            Showing {((products?.page ?? 1) - 1) * (products?.perPage ?? 4) + 1}
+            -{products?.page * products?.perPage} of {products?.itemCount} item
+            {products?.itemCount > 1 && 's'}
           </span>
           <Button
             variant="primary"
