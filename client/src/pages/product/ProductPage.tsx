@@ -2,13 +2,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import FilterCard from '@/components/cards/FilterCard';
-import ProductCard from '@/components/cards/ProductCard';
+// import ProductCard from '@/components/cards/ProductCard';
 import Button from '@/components/inputs/Button';
 import Layout from '@/components/layouts/Layout';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategories, fetchProducts } from '@/app/api/productSlice';
 import { Product } from '@/app/api/models';
 import DebouncedInput from '@/components/inputs/DebouncedInput';
+import ProductsList from '@/components/products/ProductsList';
 
 export default function ProductPage() {
   const [search, setSearch] = React.useState('');
@@ -109,8 +110,9 @@ export default function ProductPage() {
           ) : (
             <>
               Showing{' '}
-              {((products?.page ?? 1) - 1) * (products?.perPage ?? 4) + 1}-
-              {products?.page * products?.perPage} of {products?.itemCount} item
+              {((products?.page ?? 1) - 1) * (products?.perPage ?? 12) + 1}-
+              {(products?.page ?? 1) * (products?.perPage ?? 12)} of{' '}
+              {products?.itemCount} item
               {products?.itemCount > 1 && 's'}
               <span className="font-light">
                 This are the results based on {search}
@@ -118,11 +120,14 @@ export default function ProductPage() {
             </>
           )}
         </span>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {products?.content?.map((product: Product, idx: number) => (
-            <ProductCard key={idx} product={product} />
-          ))}
-        </div>
+          <ProductsList
+            products={products?.content as Product[]}
+            title=""
+            isLoading={loadingProducts}
+            loadingQuantity={12}
+            section={{ className: 'lg:px-0 -mt-14 gap-8' }}
+            grid={{ className: 'gap-8' }}
+          />
         <div className="flex flex-col justify-center items-center gap-8">
           {products?.content?.length !== 0 && (
             <span className="font-light text-md flex gap-3 flex-col">
