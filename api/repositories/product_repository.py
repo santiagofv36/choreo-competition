@@ -44,7 +44,14 @@ class ProductRepository:
             return
 
     async def get_products(
-        self, db: Session, page: int, perPage: int, search: Optional[str] = None
+        self,
+        db: Session,
+        page: int,
+        perPage: int,
+        search: Optional[str] = None,
+        category_id: Optional[UUID] = None,
+        min_price: Optional[float] = None,
+        max_price: Optional[float] = None,
     ):
         try:
             query = db.query(Product).options(
@@ -58,6 +65,16 @@ class ProductRepository:
                     Category.name.ilike(f"%{search}%"),
                 )
                 query = query.join(Category).filter(search_filter)
+            
+            # Apply category_id filter
+            if category_id:
+                query = query.filter(Product.category_id == category_id)
+
+            # Apply price range filter
+            if min_price is not None:
+                query = query.filter(Product.price >= min_price)
+            if max_price is not None:
+                query = query.filter(Product.price <= max_price)
 
             response = PaginatedResponse(query=query, pagesize=perPage)
             return response.get_paginated_results(page=page)
