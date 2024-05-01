@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import FilterCard from '@/components/cards/FilterCard';
-// import ProductCard from '@/components/cards/ProductCard';
 import Button from '@/components/inputs/Button';
 import Layout from '@/components/layouts/Layout';
 import { useDispatch, useSelector } from 'react-redux';
