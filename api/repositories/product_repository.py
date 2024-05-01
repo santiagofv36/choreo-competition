@@ -1,8 +1,9 @@
+from typing import Optional
 from repositories.auth_repository import AuthRepository
 from schemas.schemas import UserBase
 from dependencies import get_db
 from models.models import Product, Category, ProductImage, Review, User
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session, subqueryload
 from fastapi import HTTPException, status
 from dtos.product import CreateProductRequest, CreateReviewRequest
@@ -42,11 +43,22 @@ class ProductRepository:
             print(error)
             return
 
-    async def get_products(self, db: Session, page: int, perPage: int):
+    async def get_products(
+        self, db: Session, page: int, perPage: int, search: Optional[str] = None
+    ):
         try:
             query = db.query(Product).options(
                 subqueryload(Product.images).load_only(ProductImage.image),
             )
+
+            if search:
+                search_filter = or_(
+                    Product.name.ilike(f"%{search}%"),
+                    Product.description.ilike(f"%{search}%"),
+                    Category.name.ilike(f"%{search}%"),
+                )
+                query = query.join(Category).filter(search_filter)
+
             response = PaginatedResponse(query=query, pagesize=perPage)
             return response.get_paginated_results(page=page)
         except HTTPException as error:
