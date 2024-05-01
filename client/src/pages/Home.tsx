@@ -131,9 +131,10 @@ const HomePage = () => {
           <div className="grid lg:grid-cols-3 gap-8 w-full">
             <Link
               to={`/products?cat=${
+                Array.isArray(categories) &&
                 categories?.filter(
                   (category: Category) => category.name === 'Electronics'
-                )[0].id
+                )[0]?.id
               }`}
             >
               <div className="size-full relative">
@@ -152,9 +153,10 @@ const HomePage = () => {
               <div className="flex flex-col items-center justify-center w-full gap-8">
                 <Link
                   to={`/products?cat=${
+                    Array.isArray(categories) &&
                     categories?.filter(
                       (category: Category) => category.name === 'Jewelry'
-                    )[0].id
+                    )[0]?.id
                   }`}
                   className="w-full"
                 >
@@ -173,9 +175,10 @@ const HomePage = () => {
 
                 <Link
                   to={`/products?cat=${
+                    Array.isArray(categories) &&
                     categories?.filter(
                       (category: Category) => category.name === 'Clothing'
-                    )[0].id
+                    )[0]?.id
                   }`}
                   className="w-full"
                 >
@@ -195,9 +198,10 @@ const HomePage = () => {
             </div>
             <Link
               to={`/products?cat=${
+                Array.isArray(categories) &&
                 categories?.filter(
                   (category: Category) => category.name === 'Books'
-                )[0].id
+                )[0]?.id
               }`}
             >
               <div className="size-full relative">
