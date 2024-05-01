@@ -11,6 +11,10 @@ interface ProductsListProps {
     className?: string;
   };
   isLoading?: boolean;
+  loadingQuantity?: number;
+  grid?: {
+    className?: string;
+  };
 }
 
 export default function ProductsList({
@@ -20,6 +24,8 @@ export default function ProductsList({
   section,
   rightComponent,
   isLoading = false,
+  loadingQuantity = 4,
+  grid,
 }: ProductsListProps) {
   return (
     <section
@@ -36,9 +42,13 @@ export default function ProductsList({
         </div>
         {rightComponent}
       </div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <div
+        className={`grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ${
+          grid?.className ?? ''
+        }`}
+      >
         {isLoading
-          ? Array.from({ length: 4 }).map((_, idx) => (
+          ? Array.from({ length: loadingQuantity }).map((_, idx) => (
               <div key={idx} className="flex flex-col gap-2">
                 <Skeleton className="w-full lg:w-80 lg:h-96 rounded-xl" />
                 <Skeleton className="w-1/2" />
