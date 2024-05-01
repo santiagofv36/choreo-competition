@@ -49,6 +49,7 @@ class Product(Base):
     name = Column(String)
     description = Column(String)
     price = Column(Float)
+    discount_percentage = Column(Float)
     category_id = Column(Uuid, ForeignKey("categories.id"))
     stock = Column(Integer)
     availability = Column(Boolean)
