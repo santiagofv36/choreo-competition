@@ -33,6 +33,7 @@ export interface Product {
   }>;
   reviews: Pagination<Review>;
   rating: number;
+  discount_percentage: number;
 }
 
 export interface Category {
