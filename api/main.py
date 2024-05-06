@@ -6,6 +6,7 @@ from controllers.product_controller import router as prod_router
 from controllers.category_controller import router as cat_router
 from controllers.cartitem_controller import router as cart_router
 from controllers.product_image_controller import router as prodim_router
+from controllers.user_controller import router as user_router
 
 
 def get_application():
@@ -35,12 +36,13 @@ def get_application():
         from controllers.products import router as products_router
         app.include_router(products_routers, prefix="/products")
     """
-    
+
     app.include_router(auth_router)
     app.include_router(cat_router)
     app.include_router(prod_router)
     app.include_router(cart_router)
     app.include_router(prodim_router)
+    app.include_router(user_router)
 
     return app
 
