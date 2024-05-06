@@ -49,9 +49,6 @@ class ShoppingCartRepository:
         if item_cart.quantity > product.stock:
             raise HTTPException(400, "Quantity exceeds stock limit")
 
-        if cart_item and (cart_item.quantity + item_cart.quantity > product.stock):
-            raise HTTPException(400, "Quantity exceeds stock limit")
-
         if item_cart.quantity < 1:
             raise HTTPException(400, "Quantity must be greater than 0")
 
@@ -61,6 +58,19 @@ class ShoppingCartRepository:
             quantity=item_cart.quantity,
         )
 
-        cart_item = await cart_repo.create_cartitem(db, cart_item_request,cart_item)
+        cart_item = await cart_repo.create_cartitem(db, cart_item_request, cart_item)
+        return {
+            "quantity": cart_item.quantity,
+            "product": {
+                "id": product.id,
+                "name": product.name,
+                "description": product.description,
+                "price": product.price,
+                "discount_percentage": product.discount_percentage,
+                "category_id": product.category_id,
+                "stock": product.stock,
+                "availability": product.availability,
+            },
+        }
 
         return cart_item

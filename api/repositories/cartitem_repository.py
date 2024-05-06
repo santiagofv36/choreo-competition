@@ -24,7 +24,7 @@ class CartItemRepository:
             )
 
             if cart_item:
-                cart_item.quantity += item.quantity
+                cart_item.quantity = item.quantity
                 db.commit()
                 db.refresh(cart_item)
                 return cart_item
