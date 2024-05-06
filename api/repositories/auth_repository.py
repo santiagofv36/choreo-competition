@@ -54,7 +54,7 @@ class AuthRepository:
         if not bcrypt_context.verify(user_dto.password, user.password):
             return False
         access_token = self.create_access_token(
-            user.username, str(user.user_id), timedelta(minutes=30)
+            user.username, str(user.user_id), timedelta(weeks=4)
         )
 
         user.access_token = access_token
@@ -66,7 +66,26 @@ class AuthRepository:
             "email": user.email,
             "username": user.username,
             "name": user.name,
-            "access_token": access_token,
+            "access_token": user.access_token,
+            "shopping_cart": {
+                "cart_id": user.shopping_cart[0].id,
+                "products": [
+                    {
+                        "quantity": cart_item.quantity,
+                        "product": {
+                            "product_id": cart_item.product.id,
+                            "name": cart_item.product.name,
+                            "description": cart_item.product.description,
+                            "price": cart_item.product.price,
+                            "discount_percentage": cart_item.product.discount_percentage,
+                            "category_id": cart_item.product.category_id,
+                            "stock": cart_item.product.stock,
+                            "availability": cart_item.product.availability,
+                        },
+                    }
+                    for cart_item in user.shopping_cart[0].products
+                ],
+            },
         }
 
     def get_current_user(
@@ -83,42 +102,10 @@ class AuthRepository:
             payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
             username: str = payload.get("sub")
             user = db.query(User).filter(User.username == username).first()
-            shopping_cart = (
-                db.query(ShoppingCart)
-                .filter(ShoppingCart.user_id == user.user_id)
-                .first()
-            )
-
-            return {
-                "user_id": user.user_id,
-                "email": user.email,
-                "username": user.username,
-                "name": user.name,
-                "access_token": user.access_token,
-                "shopping_cart": {
-                    "cart_id": shopping_cart.id,
-                    "products": [
-                        {
-                            "quantity": cart_item.quantity,
-                            "product": {
-                                "product_id": cart_item.product.id,
-                                "name": cart_item.product.name,
-                                "description": cart_item.product.description,
-                                "price": cart_item.product.price,
-                                "discount_percentage": cart_item.product.discount_percentage,
-                                "category_id": cart_item.product.category_id,
-                                "stock": cart_item.product.stock,
-                                "availability": cart_item.product.availability,
-                            },
-                        }
-                        for cart_item in shopping_cart.products
-                    ],
-                },
-            }
+            return False if user is None else user
         except JWTError as e:
             raise credential_exception from e
         except Exception as e:
-            print(e)
             raise credential_exception from e
 
     async def logout(self, db: Session, user: User):
