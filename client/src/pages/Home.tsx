@@ -133,7 +133,7 @@ const HomePage = () => {
               to={`/products?cat=${
                 Array.isArray(categories) &&
                 categories?.filter(
-                  (category: Category) => category.name === 'Electronics'
+                  (category: Category) => category?.name === 'Electronics'
                 )[0]?.id
               }`}
             >
@@ -155,7 +155,7 @@ const HomePage = () => {
                   to={`/products?cat=${
                     Array.isArray(categories) &&
                     categories?.filter(
-                      (category: Category) => category.name === 'Jewelry'
+                      (category: Category) => category?.name === 'Jewelry'
                     )[0]?.id
                   }`}
                   className="w-full"
@@ -177,7 +177,7 @@ const HomePage = () => {
                   to={`/products?cat=${
                     Array.isArray(categories) &&
                     categories?.filter(
-                      (category: Category) => category.name === 'Clothing'
+                      (category: Category) => category?.name === 'Clothing'
                     )[0]?.id
                   }`}
                   className="w-full"
@@ -200,7 +200,7 @@ const HomePage = () => {
               to={`/products?cat=${
                 Array.isArray(categories) &&
                 categories?.filter(
-                  (category: Category) => category.name === 'Books'
+                  (category: Category) => category?.name === 'Books'
                 )[0]?.id
               }`}
             >

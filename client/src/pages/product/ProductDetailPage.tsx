@@ -12,7 +12,6 @@ import Tabs from '@/components/Tabs';
 import ReviewCard from '@/components/cards/ReviewCard';
 import ReviewForm from '@/components/forms/ReviewForm';
 import { Pagination as PaginationFooter } from '@/components/common/Pagination';
-// import ProductsList from '@/components/products/ProductsList';
 import {
   getProductById,
   getReviewsByProductId,
@@ -21,6 +20,7 @@ import {
 import { Pagination, Review } from '@/app/api/models';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCustomNavigate } from '@/hooks/use-previouspath';
+import { Badge } from '@/components/ui/badge';
 
 interface Product {
   id: string;
@@ -178,7 +178,15 @@ export default function ProductDetailPage() {
       <Layout sectionClassName="pt-32 pb-0 mb-0">
         {/* Product Detail */}
         <div className="flex flex-col gap-4 xl:flex-row">
-          <div id="left" className="flex w-full h-4/5">
+          <div id="left" className="flex w-full h-4/5 relative">
+            {product?.discount_percentage && (
+              <Badge
+                className="absolute top-2 left-2 px-3 py-1 rounded-md"
+                variant="destructive"
+              >
+                -{Number(product?.discount_percentage ?? 0) * 100}%
+              </Badge>
+            )}
             <img
               src={
                 product?.images[0]?.image ?? 'https://via.placeholder.com/500'
@@ -206,7 +214,22 @@ export default function ProductDetailPage() {
             {/* Price & ratings */}
             <div className="flex gap-1 items-center">
               <h2 className="text-primary/70 text-xl">
-                ${product?.price.toFixed(2)}
+                <span
+                  className={`text-base mr-4 ${
+                    product?.discount_percentage ? 'line-through' : ''
+                  }`}
+                >
+                  ${product?.price.toFixed(2)}
+                </span>
+                {product?.discount_percentage && (
+                  <span className="text-base">
+                    $
+                    {(
+                      (product.price ?? 1) *
+                      (1 - product?.discount_percentage ?? 1)
+                    ).toFixed(2)}
+                  </span>
+                )}
               </h2>
               <span className="text-xl text-primary/70">|</span>
               <div className="flex relative gap-1 items-center">

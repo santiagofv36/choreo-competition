@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+const apiUrl = '/choreo-apis/choreo-competition/api/rest-api-be2/v1.0';
+
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: import.meta.env.VITE_API_URL || apiUrl,
 });
 
 // axiosInstance.interceptors.request.use(
