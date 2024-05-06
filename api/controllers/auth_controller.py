@@ -82,13 +82,7 @@ async def get_current_user(
     current_user: UserBase = Depends(AuthRepository.get_current_user),
 ):
     """"""
-    return {
-        "user_id": current_user.user_id,
-        "email": current_user.email,
-        "username": current_user.username,
-        "name": current_user.name,
-        "access_token": current_user.access_token,
-    }
+    return current_user
 
 
 @router.delete("/logout")

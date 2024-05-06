@@ -10,7 +10,7 @@ from pydantic import BaseModel
 from datetime import timedelta, datetime
 from dependencies import get_db
 from dtos.user import CreateUserRequest, LoginRequest
-from models.models import User
+from models.models import CartItem, ShoppingCart, User
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -83,10 +83,42 @@ class AuthRepository:
             payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
             username: str = payload.get("sub")
             user = db.query(User).filter(User.username == username).first()
-            return False if user is None else user
+            shopping_cart = (
+                db.query(ShoppingCart)
+                .filter(ShoppingCart.user_id == user.user_id)
+                .first()
+            )
+
+            return {
+                "user_id": user.user_id,
+                "email": user.email,
+                "username": user.username,
+                "name": user.name,
+                "access_token": user.access_token,
+                "shopping_cart": {
+                    "cart_id": shopping_cart.id,
+                    "products": [
+                        {
+                            "quantity": cart_item.quantity,
+                            "product": {
+                                "product_id": cart_item.product.id,
+                                "name": cart_item.product.name,
+                                "description": cart_item.product.description,
+                                "price": cart_item.product.price,
+                                "discount_percentage": cart_item.product.discount_percentage,
+                                "category_id": cart_item.product.category_id,
+                                "stock": cart_item.product.stock,
+                                "availability": cart_item.product.availability,
+                            },
+                        }
+                        for cart_item in shopping_cart.products
+                    ],
+                },
+            }
         except JWTError as e:
             raise credential_exception from e
         except Exception as e:
+            print(e)
             raise credential_exception from e
 
     async def logout(self, db: Session, user: User):
