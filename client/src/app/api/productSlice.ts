@@ -35,17 +35,14 @@ const CACHE_TIME_THRESHOLD = 25 * 60 * 1000; // 5 minutes in milliseconds
 
 export const fetchProducts = createAsyncThunk(
   'products',
-  async (
-    pageInfo: {
-      page: number;
-      perPage: number;
-      search: string;
-      category_id: string;
-      minPrice: number;
-      maxPrice: number;
-    }
-  ) => {
-
+  async (pageInfo: {
+    page: number;
+    perPage: number;
+    search: string;
+    category_id: string;
+    minPrice: number;
+    maxPrice: number;
+  }) => {
     try {
       const response = await api.productsPagination(
         pageInfo.page,
@@ -214,7 +211,7 @@ export const fetchCategories = createAsyncThunk(
 
     if (
       state.products.categories.length &&
-      Date.now() - state.products.lastFetchedProducts < CACHE_TIME_THRESHOLD
+      Date.now() - state.products.lastFetchedFeatured < CACHE_TIME_THRESHOLD
     ) {
       return state.products.categories;
     }
