@@ -94,7 +94,7 @@ async def get_current_user(
                 {
                     "quantity": cart_item.quantity,
                     "product": {
-                        "product_id": cart_item.product.id,
+                        "id": cart_item.product.id,
                         "name": cart_item.product.name,
                         "description": cart_item.product.description,
                         "price": cart_item.product.price,
