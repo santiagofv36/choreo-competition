@@ -2,6 +2,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '@/app/store';
 import api from '@/app/api/api';
+import { AuthSlice } from './models';
 
 export const loginUser = createAsyncThunk(
   'auth/login',
@@ -74,8 +75,55 @@ export const registerUser = createAsyncThunk(
   }
 );
 
+export const addProductToCart = createAsyncThunk(
+  'user/shopping_cart/add',
+  async (data: { product_id: string; quantity: number }, { getState }) => {
+    try {
+      const state = getState() as RootState;
+
+      const response = await api.addProductToCart(
+        data.product_id,
+        data.quantity
+      );
+
+      // if the product is already on the cart, find it and remove it from the cart and add it again with the new quantity
+      const foundProd = state.auth.user?.shopping_cart.products.find(
+        (prod) => prod.product.id === data.product_id
+      );
+
+      if (foundProd) {
+        const newProds = state.auth.user?.shopping_cart.products.filter(
+          (prod) => prod.product.id !== data.product_id
+        );
+
+        const newCart = {
+          cart_id: state.auth.user?.shopping_cart?.cart_id,
+          products: newProds,
+        };
+
+        console.log('OLD CART', state.auth.user?.shopping_cart);
+        // console.log('NEW CART', newCart);
+
+        const newProd = {
+          quantity: data.quantity,
+          product: foundProd.product,
+        };
+
+        newProds?.push(newProd);
+
+        return newCart;
+      }
+
+      return [...state.auth.user!.shopping_cart.products, response.data];
+    } catch (error: any) {
+      console.log(error);
+      return Promise.reject(error.response.data);
+    }
+  }
+);
+
 // Define initial state
-const initialState = {
+const initialState: AuthSlice = {
   user: null,
   loading: false,
   error: '',
@@ -138,6 +186,17 @@ const authSlice = createSlice({
       .addCase(registerUser.rejected, (state) => {
         state.loading = false;
         state.error = 'Failed to register. Please try again.';
+      })
+      .addCase(addProductToCart.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(addProductToCart.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user!.shopping_cart = action.payload as any;
+      })
+      .addCase(addProductToCart.rejected, (state) => {
+        state.loading = false;
+        state.error = 'Failed to add product to cart. Please try again.';
       });
   },
 });
