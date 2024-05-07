@@ -114,7 +114,10 @@ export const addProductToCart = createAsyncThunk(
         return newCart;
       }
 
-      return [...state.auth.user!.shopping_cart.products, response.data];
+      return {
+        ...state.auth.user?.shopping_cart,
+        products: [...state.auth.user!.shopping_cart.products, response.data],
+      };
     } catch (error: any) {
       console.log(error);
       return Promise.reject(error.response.data);
