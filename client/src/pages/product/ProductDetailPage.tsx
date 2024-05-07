@@ -17,26 +17,12 @@ import {
   getReviewsByProductId,
   resetReviewPagination,
 } from '@/app/api/productSlice';
-import { Pagination, Review } from '@/app/api/models';
+import { Pagination, Product, Review } from '@/app/api/models';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCustomNavigate } from '@/hooks/use-previouspath';
 import { Badge } from '@/components/ui/badge';
-
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  description: string;
-  rating: number;
-  numRatings?: number;
-  isLiked?: boolean;
-  detailedDescription: string[];
-  images: {
-    image: string;
-    id: string;
-  }[];
-  stock: number;
-}
+import { addProductToCart } from '@/app/api/authSlice';
+import toast from 'react-hot-toast';
 
 export default function ProductDetailPage() {
   const { id } = useParams();
@@ -44,6 +30,8 @@ export default function ProductDetailPage() {
   const [ammount, setAmmount] = React.useState<number>(1);
 
   const min = React.useMemo(() => ammount === 1, [ammount]);
+
+  const loading = useSelector((state: any) => state.auth.loading);
 
   const location = useLocation();
 
@@ -131,6 +119,26 @@ export default function ProductDetailPage() {
 
     searchParams.set('tab', tabName);
     navigate(`/products/${id}?${searchParams.toString().toLowerCase()}`);
+  };
+
+  const handleAddToCart = () => {
+    if (product) {
+      try {
+        dispatch(
+          addProductToCart({
+            product_id: product.id,
+            quantity: ammount,
+          }) as any // Add type assertion here if necessary
+        );
+        setTimeout(() => {
+          toast.success('Product added to cart');
+        }, 2000);
+      } catch (e) {
+        toast.error('An error occurred');
+      } finally {
+        setAmmount(1);
+      }
+    }
   };
 
   if (!product) {
@@ -324,7 +332,11 @@ export default function ProductDetailPage() {
                     />
                   </button>
                 </div>
-                <Button onClick={() => {}} text="Add To Cart" />
+                <Button
+                  onClick={handleAddToCart}
+                  text="Add To Cart"
+                  disabled={loading}
+                />
               </div>
               <Button onClick={() => {}} variant="secondary" text="Buy Now" />
             </div>

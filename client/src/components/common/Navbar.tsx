@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
-import { Menu } from 'lucide-react';
+import { Menu, ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 import nProgress from 'nprogress';
 import Logo from '@/components/icons/logoIcon';
 import UserIcon from '@/components/icons/UserIcon';
-import CartIcon from '@/components/icons/cartIcon';
 import { logoutUser } from '@/app/api/authSlice';
 import { useCustomNavigate } from '@/hooks/use-previouspath';
+import { Badge } from '../ui/badge';
 
 const ROUTES = [
   {
@@ -134,12 +134,20 @@ export default function Navbar() {
                 } size-6`}
               />
             </Link>
-            <Link to="/cart">
-              <CartIcon
+            <Link to="/cart" className="relative">
+              <ShoppingCart
                 className={`${
                   islightNav ? 'text-white' : 'text-primary'
                 } size-6`}
               />
+              {user?.shopping_cart?.products?.length > 0 ? (
+                <Badge
+                  className="absolute bottom-[21.5px] left-5 rounded-full text-[10px]"
+                  variant="destructive"
+                >
+                  {user?.shopping_cart?.products?.length ?? 0}
+                </Badge>
+              ) : null}
             </Link>
             <span
               className={`${

@@ -10,7 +10,7 @@ from pydantic import BaseModel
 from datetime import timedelta, datetime
 from dependencies import get_db
 from dtos.user import CreateUserRequest, LoginRequest
-from models.models import User
+from models.models import CartItem, ShoppingCart, User
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -54,7 +54,7 @@ class AuthRepository:
         if not bcrypt_context.verify(user_dto.password, user.password):
             return False
         access_token = self.create_access_token(
-            user.username, str(user.user_id), timedelta(minutes=30)
+            user.username, str(user.user_id), timedelta(weeks=4)
         )
 
         user.access_token = access_token
@@ -66,7 +66,26 @@ class AuthRepository:
             "email": user.email,
             "username": user.username,
             "name": user.name,
-            "access_token": access_token,
+            "access_token": user.access_token,
+            "shopping_cart": {
+                "cart_id": user.shopping_cart[0].id,
+                "products": [
+                    {
+                        "quantity": cart_item.quantity,
+                        "product": {
+                            "id": cart_item.product.id,
+                            "name": cart_item.product.name,
+                            "description": cart_item.product.description,
+                            "price": cart_item.product.price,
+                            "discount_percentage": cart_item.product.discount_percentage,
+                            "category_id": cart_item.product.category_id,
+                            "stock": cart_item.product.stock,
+                            "availability": cart_item.product.availability,
+                        },
+                    }
+                    for cart_item in user.shopping_cart[0].products
+                ],
+            },
         }
 
     def get_current_user(

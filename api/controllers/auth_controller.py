@@ -88,6 +88,25 @@ async def get_current_user(
         "username": current_user.username,
         "name": current_user.name,
         "access_token": current_user.access_token,
+        "shopping_cart": {
+            "cart_id": current_user.shopping_cart[0].id,
+            "products": [
+                {
+                    "quantity": cart_item.quantity,
+                    "product": {
+                        "id": cart_item.product.id,
+                        "name": cart_item.product.name,
+                        "description": cart_item.product.description,
+                        "price": cart_item.product.price,
+                        "discount_percentage": cart_item.product.discount_percentage,
+                        "category_id": cart_item.product.category_id,
+                        "stock": cart_item.product.stock,
+                        "availability": cart_item.product.availability,
+                    },
+                }
+                for cart_item in current_user.shopping_cart[0].products
+            ],
+        },
     }
 
 

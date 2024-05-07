@@ -131,6 +131,7 @@ const HomePage = () => {
           <div className="grid lg:grid-cols-3 gap-8 w-full">
             <Link
               to={`/products?cat=${
+                Array.isArray(categories) &&
                 categories?.filter(
                   (category: Category) => category?.name === 'Electronics'
                 )[0]?.id
@@ -152,6 +153,7 @@ const HomePage = () => {
               <div className="flex flex-col items-center justify-center w-full gap-8">
                 <Link
                   to={`/products?cat=${
+                    Array.isArray(categories) &&
                     categories?.filter(
                       (category: Category) => category?.name === 'Jewelry'
                     )[0]?.id
@@ -173,6 +175,7 @@ const HomePage = () => {
 
                 <Link
                   to={`/products?cat=${
+                    Array.isArray(categories) &&
                     categories?.filter(
                       (category: Category) => category?.name === 'Clothing'
                     )[0]?.id
@@ -195,6 +198,7 @@ const HomePage = () => {
             </div>
             <Link
               to={`/products?cat=${
+                Array.isArray(categories) &&
                 categories?.filter(
                   (category: Category) => category?.name === 'Books'
                 )[0]?.id

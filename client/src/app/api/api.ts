@@ -6,21 +6,6 @@ const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL || apiUrl,
 });
 
-// axiosInstance.interceptors.request.use(
-//   (config) => {
-//     const cookies = document.cookie.split(';').map((cookie) => cookie.trim());
-
-//     const token = cookies.find((cookie) => cookie.startsWith('access_token='));
-
-//     if (token) {
-//       config.headers.Authorization = `Bearer ${token.split('=')[1]}`;
-//     }
-
-//     return config;
-//   },
-//   (error) => Promise.reject(error)
-// );
-
 const extract_cookie = () => {
   const cookies = document.cookie.split(';').map((cookie) => cookie.trim());
   const token = cookies.find((cookie) => cookie.startsWith('access_token='));
@@ -88,6 +73,17 @@ const api = {
   popularProducts: () => axiosInstance.get('/products/popular'),
 
   categories: () => axiosInstance.get('/categories'),
+
+  addProductToCart: (product_id: string, quantity: number) =>
+    axiosInstance.post(
+      '/user/shopping_cart/add',
+      { product_id, quantity },
+      {
+        headers: {
+          Authorization: `Bearer ${extract_cookie()}`,
+        },
+      }
+    ),
 };
 
 export default api;

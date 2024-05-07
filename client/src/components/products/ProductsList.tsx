@@ -58,7 +58,8 @@ export default function ProductsList({
                 </div>
               </div>
             ))
-          : products?.map((product, idx) => (
+          : Array.isArray(products) &&
+            products?.map((product, idx) => (
               <ProductCard key={product?.id ?? idx} product={product} />
             ))}
       </div>

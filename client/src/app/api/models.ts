@@ -5,6 +5,17 @@ export interface User {
   name: string;
   access_token: string;
   image: string;
+  shopping_cart: ShoppingCart;
+}
+
+export interface ShoppingCart {
+  cart_id: string;
+  products: ShoppingCartItem[];
+}
+
+export interface ShoppingCartItem {
+  quantity: number;
+  product: Product;
 }
 
 export interface Review {
@@ -57,6 +68,13 @@ export interface ProductSlice {
   lastFetchedProducts: number;
   lastFetchedFeatured: number;
   lastFetchedPopular: number;
+}
+
+export interface AuthSlice {
+  user: User | null;
+  loading: boolean;
+  error: string;
+  attempttedCurrentUser: boolean;
 }
 
 export type Pagination<T> = Partial<{
