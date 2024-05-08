@@ -102,6 +102,7 @@ async def get_current_user(
                         "category_id": cart_item.product.category_id,
                         "stock": cart_item.product.stock,
                         "availability": cart_item.product.availability,
+                        "images": cart_item.product.images,
                     },
                 }
                 for cart_item in current_user.shopping_cart[0].products

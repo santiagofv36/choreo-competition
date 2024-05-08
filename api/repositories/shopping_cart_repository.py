@@ -70,7 +70,6 @@ class ShoppingCartRepository:
                 "category_id": product.category_id,
                 "stock": product.stock,
                 "availability": product.availability,
+                "images": product.images,
             },
         }
-
-        return cart_item
