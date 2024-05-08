@@ -14,6 +14,7 @@ export interface ShoppingCart {
 }
 
 export interface ShoppingCartItem {
+  id?: string;
   quantity: number;
   product: Product;
 }
