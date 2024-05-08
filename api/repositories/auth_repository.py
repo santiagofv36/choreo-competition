@@ -71,6 +71,7 @@ class AuthRepository:
                 "cart_id": user.shopping_cart[0].id,
                 "products": [
                     {
+                        "id": cart_item.id,
                         "quantity": cart_item.quantity,
                         "product": {
                             "id": cart_item.product.id,
@@ -81,6 +82,7 @@ class AuthRepository:
                             "category_id": cart_item.product.category_id,
                             "stock": cart_item.product.stock,
                             "availability": cart_item.product.availability,
+                            "images": cart_item.product.images,
                         },
                     }
                     for cart_item in user.shopping_cart[0].products

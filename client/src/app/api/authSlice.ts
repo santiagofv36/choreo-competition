@@ -102,7 +102,6 @@ export const addProductToCart = createAsyncThunk(
         };
 
         console.log('OLD CART', state.auth.user?.shopping_cart);
-        // console.log('NEW CART', newCart);
 
         const newProd = {
           quantity: data.quantity,
@@ -111,10 +110,15 @@ export const addProductToCart = createAsyncThunk(
 
         newProds?.push(newProd);
 
+        newCart.products = newProds;
+
         return newCart;
       }
 
-      return [...state.auth.user!.shopping_cart.products, response.data];
+      return {
+        ...state.auth.user?.shopping_cart,
+        products: [...state.auth.user!.shopping_cart.products, response.data],
+      };
     } catch (error: any) {
       console.log(error);
       return Promise.reject(error.response.data);
