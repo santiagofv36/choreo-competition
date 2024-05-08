@@ -102,7 +102,6 @@ export const addProductToCart = createAsyncThunk(
         };
 
         console.log('OLD CART', state.auth.user?.shopping_cart);
-        // console.log('NEW CART', newCart);
 
         const newProd = {
           quantity: data.quantity,
@@ -110,6 +109,8 @@ export const addProductToCart = createAsyncThunk(
         };
 
         newProds?.push(newProd);
+
+        newCart.products = newProds;
 
         return newCart;
       }
