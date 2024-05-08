@@ -60,6 +60,7 @@ class ShoppingCartRepository:
 
         cart_item = await cart_repo.create_cartitem(db, cart_item_request, cart_item)
         return {
+            "id": cart_item.id,
             "quantity": cart_item.quantity,
             "product": {
                 "id": product.id,

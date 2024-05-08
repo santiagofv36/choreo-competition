@@ -92,6 +92,7 @@ async def get_current_user(
             "cart_id": current_user.shopping_cart[0].id,
             "products": [
                 {
+                    "id": cart_item.id,
                     "quantity": cart_item.quantity,
                     "product": {
                         "id": cart_item.product.id,
