@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import React from 'react';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux';
 import { addProductToCart, removeProductFromCart } from '@/app/api/authSlice';
 import { ShoppingCartItem } from '@/app/api/models';
 import Button from '@/components/inputs/Button';
 import Layout from '@/components/layouts/Layout';
 import { Minus, Plus, X } from 'lucide-react';
-import React from 'react';
-import toast from 'react-hot-toast';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router';
 
 interface TableHeaderProps {
   header?: string;
@@ -83,7 +83,7 @@ export default function CartPage() {
   };
 
   if (!user) {
-    return navigate('/auth?redirect=login');
+    navigate('/auth?redirect=login');
   }
 
   const handleAmmountChange = (
