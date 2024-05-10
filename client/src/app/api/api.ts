@@ -84,6 +84,13 @@ const api = {
         },
       }
     ),
+
+  removeProductFromCart: (cart_item_id: string) =>
+    axiosInstance.delete(`/cartitem/delete/${cart_item_id}`, {
+      headers: {
+        Authorization: `Bearer ${extract_cookie()}`,
+      },
+    }),
 };
 
 export default api;

@@ -92,27 +92,19 @@ export const addProductToCart = createAsyncThunk(
       );
 
       if (foundProd) {
-        const newProds = state.auth.user?.shopping_cart.products.filter(
-          (prod) => prod.product.id !== data.product_id
-        );
+        return {
+          ...state.auth.user?.shopping_cart,
+          products: state.auth.user!.shopping_cart.products.map((prod) => {
+            if (prod.product.id === data.product_id) {
+              return {
+                ...prod,
+                quantity: data.quantity,
+              };
+            }
 
-        const newCart = {
-          cart_id: state.auth.user?.shopping_cart?.cart_id,
-          products: newProds,
+            return prod;
+          }),
         };
-
-        console.log('OLD CART', state.auth.user?.shopping_cart);
-
-        const newProd = {
-          quantity: data.quantity,
-          product: foundProd.product,
-        };
-
-        newProds?.push(newProd);
-
-        newCart.products = newProds;
-
-        return newCart;
       }
 
       return {
@@ -122,6 +114,26 @@ export const addProductToCart = createAsyncThunk(
     } catch (error: any) {
       console.log(error);
       return Promise.reject(error.response.data);
+    }
+  }
+);
+
+export const removeProductFromCart = createAsyncThunk(
+  'user/shopping_cart/remove',
+  async (cart_item_id: string, { getState, rejectWithValue }) => {
+    try {
+      const state = getState() as RootState;
+
+      await api.removeProductFromCart(cart_item_id);
+
+      return {
+        ...state.auth.user?.shopping_cart,
+        products: state.auth.user!.shopping_cart.products.filter(
+          (prod) => prod.id !== cart_item_id
+        ),
+      };
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
     }
   }
 );
@@ -201,6 +213,17 @@ const authSlice = createSlice({
       .addCase(addProductToCart.rejected, (state) => {
         state.loading = false;
         state.error = 'Failed to add product to cart. Please try again.';
+      })
+      .addCase(removeProductFromCart.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(removeProductFromCart.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user!.shopping_cart = action.payload as any;
+      })
+      .addCase(removeProductFromCart.rejected, (state) => {
+        state.loading = false;
+        state.error = 'Failed to remove product from cart. Please try again.';
       });
   },
 });
