@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { addProductToCart } from '@/app/api/authSlice';
+import { addProductToCart, removeProductFromCart } from '@/app/api/authSlice';
 import { ShoppingCartItem } from '@/app/api/models';
 import Button from '@/components/inputs/Button';
 import Layout from '@/components/layouts/Layout';
@@ -12,11 +12,16 @@ import { useNavigate } from 'react-router';
 interface TableHeaderProps {
   header?: string;
   titles?: string[];
+  className?: string;
 }
 
-const TableHeader = ({ header, titles }: TableHeaderProps) => {
+const TableHeader = ({ header, titles, className }: TableHeaderProps) => {
   return (
-    <header className="flex w-full rounded-t-lg bg-primary px-12 py-8 text-lg text-white justify-between">
+    <header
+      className={`flex w-full rounded-t-lg bg-primary px-12 py-8 text-lg text-white justify-between ${
+        className ?? ''
+      }`}
+    >
       {!titles ? (
         <span>{header}</span>
       ) : (
@@ -44,6 +49,8 @@ const TableRow = ({ title, value }: TableRowProps) => (
 export default function CartPage() {
   const user = useSelector((state: any) => state.auth.user);
 
+  const loading = useSelector((state: any) => state.auth.loading);
+
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -65,16 +72,28 @@ export default function CartPage() {
     [subtotal, taxes]
   );
 
-  const onDeleteItem = (id: string) => {
-    console.log(id);
-    toast.success(`Item removed from cart ${id}`);
+  const onDeleteItem = async (id: string) => {
+    const res = await dispatch(removeProductFromCart(id) as any);
+    if (res.error) {
+      return toast.error('Error removing item from cart');
+    }
+    setTimeout(() => {
+      toast.success('Item removed from cart');
+    }, 1500);
   };
 
   if (!user) {
     return navigate('/auth?redirect=login');
   }
 
-  const handleAmmountChange = (id: string, ammount: number) => {
+  const handleAmmountChange = (
+    id: string,
+    ammount: number,
+    cart_item_id?: string
+  ) => {
+    if (ammount <= 0 && cart_item_id) {
+      return onDeleteItem(cart_item_id);
+    }
     try {
       dispatch(addProductToCart({ product_id: id, quantity: ammount }) as any);
       setTimeout(() => {
@@ -88,8 +107,11 @@ export default function CartPage() {
   return (
     <Layout>
       <section className="flex gap-8 flex-col lg:flex-row lg:justify-between justify-center w-full">
-        <article className="w-full py-auto border">
-          <TableHeader titles={['Product', 'Quantity', 'Price', 'Total']} />
+        <article className="w-full py-auto border overflow-y-auto max-h-[768px]">
+          <TableHeader
+            titles={['Product', 'Quantity', 'Price', 'Total']}
+            className="sticky top-0 z-10"
+          />
           {products.map((product: ShoppingCartItem) => (
             <div
               key={product?.product?.id}
@@ -115,25 +137,18 @@ export default function CartPage() {
                   onClick={() =>
                     handleAmmountChange(
                       product.product.id,
-                      (product?.quantity ?? 1) - 1
+                      (product?.quantity ?? 1) - 1,
+                      product.id
                     )
                   }
-                  className={`w-1/3 text-center bg-white group-hover:bg-primary group-hover:text-white transition-all duration-300 ease-in-out font-semibold text-sm lg:text-base  rounded-full h-full rounded-r-none ${
-                    product?.quantity === 1 ? 'pointer-events-none' : ''
-                  }
-                  ${product?.quantity === 1 ? 'disabled:text-primary/50' : ''}
-                `}
-                  disabled={product?.quantity === 1}
+                  className="w-1/3 text-center bg-white group-hover:bg-primary group-hover:text-white transition-all duration-300 ease-in-out font-semibold text-sm lg:text-base  rounded-full h-full rounded-r-none
+                "
+                  disabled={loading}
                 >
                   <Minus
                     size={20}
-                    className={`group-hover:text-white transition-all duration-300 ease-in-out ml-3 lg:ml-2
-                    ${
-                      product?.quantity === 1
-                        ? 'text-primary/30'
-                        : 'text-primary'
-                    }
-                  `}
+                    className="group-hover:text-white transition-all duration-300 ease-in-out ml-3 lg:ml-2
+                  "
                   />
                 </button>
                 <span
@@ -168,7 +183,9 @@ export default function CartPage() {
                       : ''
                   }
                 `}
-                  disabled={product?.quantity === product?.product?.stock}
+                  disabled={
+                    loading || product?.quantity === product?.product?.stock
+                  }
                 >
                   <Plus
                     size={20}
