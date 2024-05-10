@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from starlette import status
+from models.models import User
+from repositories.auth_repository import AuthRepository
 from dependencies import get_db
 from repositories.cartitem_repository import CartItemRepository
 from dtos.cartitem import CreateCartItemRequest
@@ -17,32 +19,36 @@ router = APIRouter(
 async def create_cartitem(
     create_cartitem_request: CreateCartItemRequest,
     db: Session = Depends(get_db),
-    cart_repo : CartItemRepository = Depends(CartItemRepository)
+    cart_repo: CartItemRepository = Depends(CartItemRepository),
 ):
-    """ Adds product to Shopping Cart """
+    """Adds product to Shopping Cart"""
 
-    cartitem = await cart_repo.create_cartitem(db,create_cartitem_request)
+    cartitem = await cart_repo.create_cartitem(db, create_cartitem_request)
 
     if not cartitem:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Product already exists"
         )
-    
+
     return cartitem
 
-@router.delete("/delete/{id}",status_code=status.HTTP_204_NO_CONTENT)
+
+@router.delete("/delete/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_cartitem(
-    id : UUID,
-    db : Session = Depends(get_db),
-    prod_repo : CartItemRepository = Depends(CartItemRepository)
+    id: UUID,
+    db: Session = Depends(get_db),
+    prod_repo: CartItemRepository = Depends(CartItemRepository),
+    current_user: User = Depends(AuthRepository.get_current_user),
 ):
-    await prod_repo.delete_cartitem(db,id=id)
+    """Deletes product from Shopping Cart"""
+    await prod_repo.delete_cartitem(db, id=id)
+
 
 @router.get("")
 async def get_cartitems_page(
-    page : int,
-    db : Session = Depends(get_db),
-    prod_repo : CartItemRepository = Depends(CartItemRepository)
+    page: int,
+    db: Session = Depends(get_db),
+    prod_repo: CartItemRepository = Depends(CartItemRepository),
 ):
-    cartitems = await prod_repo.get_cartitems(db,page=page)
+    cartitems = await prod_repo.get_cartitems(db, page=page)
     return cartitems
